@@ -16,6 +16,8 @@ pub type BoxSource = Box<dyn Source<Item = f32> + Send + 'static>;
 
 /// Abre un archivo como fuente de audio. Usa Rodio primero y cae a Ogg/Opus.
 pub fn source_from_path(path: &str, loop_mode: bool) -> Option<BoxSource> {
+    // M4A/AAC: la copia convertida si hace falta (ver `transcode`).
+    let path = &super::transcode::resolve(path)?;
     rodio_source(path, loop_mode).or_else(|| opus_source(path, loop_mode))
 }
 
@@ -26,6 +28,7 @@ pub fn source_from_path_at(path: &str, loop_mode: bool, start_s: f64) -> Option<
     if start_s <= 0.0 {
         return source_from_path(path, loop_mode);
     }
+    let path = &super::transcode::resolve(path)?;
     // `seek_source` primero: es el unico que posiciona DE VERDAD. El `try_seek`
     // de rodio falla siempre (no informa del tamano del archivo a symphonia), y
     // cuando falla hay que descartar las muestras una a una hasta el punto

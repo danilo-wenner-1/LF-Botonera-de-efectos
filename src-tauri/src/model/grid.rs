@@ -19,5 +19,8 @@ pub struct ButtonView {
 pub struct GridState {
     pub columns: u32,
     pub rows: u32,
+    /// Tamaño de texto predeterminado de la pestaña (px). 0 = el global.
+    #[serde(default)]
+    pub font_size: u32,
     pub buttons: Vec<ButtonView>,
 }

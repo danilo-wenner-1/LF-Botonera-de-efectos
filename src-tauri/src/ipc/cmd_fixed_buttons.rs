@@ -112,6 +112,7 @@ pub fn update_fixed_button(
     midi: Option<crate::model::MidiBinding>,
     replace_shortcut: Option<bool>,
     visual: Option<crate::model::ButtonVisual>,
+    style: Option<crate::model::ButtonStyle>,
     app: tauri::AppHandle,
     state_: tauri::State<AppState>,
 ) -> Result<FixedPanelState, String> {
@@ -130,6 +131,9 @@ pub fn update_fixed_button(
     }
     if let Some(value) = visual.as_ref() {
         crate::engine::visuals::validate_button_visual(value)?;
+    }
+    if let Some(value) = style.as_ref() {
+        value.validate()?;
     }
     if let Some(value) = midi.as_ref() {
         crate::engine::input::midi_rules::apply_fixed(
@@ -190,6 +194,9 @@ pub fn update_fixed_button(
     }
     if let Some(value) = visual {
         btn.visual = value;
+    }
+    if let Some(value) = style {
+        btn.style = value;
     }
     config_io::save_config(&cfg)?;
     let next = state(&cfg);

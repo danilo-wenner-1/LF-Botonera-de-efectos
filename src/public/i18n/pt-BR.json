@@ -25,7 +25,8 @@
       "edit": "Editar Aba...",
       "export": "Exportar (.bdelf)",
       "import": "Importar (.bdelf)",
-      "delete": "Excluir Aba"
+      "delete": "Excluir Aba",
+      "shortcut": "Atribuir atalho de teclado..."
     }
   },
   "grid": {
@@ -39,7 +40,10 @@
     "cols_label": "Colunas (H):",
     "bg_color": "Cor de fundo:",
     "text_color": "Cor do texto:",
-    "save": "Salvar"
+    "save": "Salvar",
+    "audio_out": "Saída de áudio desta aba:",
+    "audio_out_main": "Saída principal (a das Configurações)",
+    "audio_out_default": "Padrão do sistema"
   },
   "profiles": {
     "tooltip": "Opções de Perfis",
@@ -116,7 +120,8 @@
     "donate_btn": "☕ Apoie o criador aqui",
     "toolbar_buttons": "Botões da barra superior:",
     "show_console": "Mostrar o Console de áudio",
-    "show_fixed_panel": "Mostrar o Painel fixo"
+    "show_fixed_panel": "Mostrar o Painel fixo",
+    "show_bottom_bar": "Mostrar a barra inferior (relógio, modos, Mic, volume, Parar tudo)"
   },
   "audio_device": {
     "title": "Saída de áudio indisponível",
@@ -188,25 +193,25 @@
     "ready": "Tudo pronto."
   },
   "library": {
-      "window_title": "Biblioteca — LF Botoneira de Efeitos",
-      "open_window": "Abrir Biblioteca",
-      "loading": "Carregando Biblioteca…",
-      "refresh": "Atualizar",
-      "show_all": "Mostrar tudo",
-      "processing_center": "Central de processamento",
-      "local_navigator": "Navegador local",
-      "no_results": "Não há itens para mostrar.",
-      "folder_items": "{count} itens na pasta",
-      "visible_items": "{count} itens carregados",
-      "files_count": "{count} arquivos",
-      "col_name": "Nome",
-      "col_path": "Caminho completo",
-      "col_title": "Título",
-      "col_artist": "Artista",
-      "col_album": "Álbum",
-      "col_genre": "Gênero",
-      "col_year": "Ano",
-      "col_duration": "Duração",
+    "window_title": "Biblioteca — LF Botoneira de Efeitos",
+    "open_window": "Abrir Biblioteca",
+    "loading": "Carregando Biblioteca…",
+    "refresh": "Atualizar",
+    "show_all": "Mostrar tudo",
+    "processing_center": "Central de processamento",
+    "local_navigator": "Navegador local",
+    "no_results": "Não há itens para mostrar.",
+    "folder_items": "{count} itens na pasta",
+    "visible_items": "{count} itens carregados",
+    "files_count": "{count} arquivos",
+    "col_name": "Nome",
+    "col_path": "Caminho completo",
+    "col_title": "Título",
+    "col_artist": "Artista",
+    "col_album": "Álbum",
+    "col_genre": "Gênero",
+    "col_year": "Ano",
+    "col_duration": "Duração",
     "search_title": "Busca",
     "search_title_compact": "Busca",
     "search_placeholder": "Buscar áudio…",
@@ -831,9 +836,15 @@
     "library_rename_locked": "O arquivo está sendo usado por outro aplicativo. Feche-o e tente novamente.",
     "library_rename_failed": "Não foi possível renomear o arquivo; o nome anterior foi preservado.",
     "library_rename_recovery_failed": "Não foi possível concluir a recuperação automática. Não feche o aplicativo e verifique o arquivo original.",
-    "library_rename_journal_invalid": "Não foi possível preparar o registro de segurança para renomear o arquivo."
-  }
-,
+    "library_rename_journal_invalid": "Não foi possível preparar o registro de segurança para renomear o arquivo.",
+    "audio_converting": "Este efeito está sendo preparado (conversão de M4A). Tente novamente em alguns segundos.",
+    "audio_convert_failed": "Não foi possível converter o arquivo: pode estar danificado ou em um formato incompatível.",
+    "audio_converter_missing": "Falta o conversor de áudio (FFmpeg) incluído no aplicativo.",
+    "button_without_audio": "Este botão não tem um arquivo de áudio atribuído.",
+    "invalid_hex_color": "Código de cor inválido.",
+    "invalid_gradient": "Degradê inválido: escolha a segunda cor.",
+    "invalid_font_size": "Tamanho de texto fora do intervalo (8–48 px)."
+  },
   "mic": {
     "label": "Mic",
     "settings": "Pressionar para falar · Mic",
@@ -869,5 +880,46 @@
     "input_format": "O formato desta entrada de microfone não está disponível.",
     "unavailable": "O controle de Mic não está disponível.",
     "input_required": "Mic precisa de um pressionamento e sua liberação."
+  },
+  "tab_outputs": {
+    "title": "Saída da aba indisponível",
+    "body": "Estas abas não podem tocar pela saída escolhida. Enquanto isso, os efeitos tocam pela saída principal, sem cortes.",
+    "missing": "não está conectada",
+    "too_many": "o máximo de 8 saídas diferentes foi atingido",
+    "use_main": "Usar a saída principal em todas",
+    "use_selected": "Atribuir",
+    "keep": "Manter (volta sozinha ao reconectar)",
+    "unavailable": "está em uso por outro programa ou não pôde ser aberta"
+  },
+  "font_size": {
+    "button": "Tamanho do texto do botão:",
+    "tab": "Tamanho de texto padrão dos botões:",
+    "tab_hint": "Botões com tamanho próprio o mantêm; os demais usam este.",
+    "increase": "Aumentar tamanho do texto",
+    "decrease": "Diminuir tamanho do texto",
+    "reset": "Voltar ao padrão",
+    "from_tab": "Da aba",
+    "from_global": "Global"
+  },
+  "colors": {
+    "fill": "Preenchimento:",
+    "solid": "Cor sólida",
+    "horizontal": "Degradê horizontal",
+    "vertical": "Degradê vertical",
+    "diagonal": "Degradê diagonal ↘",
+    "diagonal_inv": "Degradê diagonal ↗",
+    "bg2": "Segunda cor de fundo:",
+    "text_gradient": "Texto em degradê (segunda cor):",
+    "exact": "Cor exata (não adaptar ao tema)",
+    "preview": "Pré-visualização:",
+    "hex_hint": "Código HEX: #RRGGBB (também pode colar)",
+    "hex_invalid": "Há um código de cor inválido. Use o formato #RRGGBB, por exemplo #3498DB."
+  },
+  "search": {
+    "tooltip": "Buscar efeitos em todas as abas",
+    "placeholder": "Buscar por nome, arquivo, aba ou posição…",
+    "hint": "Exemplos: «aplausos», «vinhetas 5», «12».",
+    "no_results": "Nenhum efeito encontrado.",
+    "location": "Aba {n}: {tab} · botão {index} (linha {row}, coluna {col})"
   }
 }

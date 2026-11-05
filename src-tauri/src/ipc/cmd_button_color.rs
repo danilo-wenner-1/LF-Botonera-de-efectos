@@ -67,6 +67,9 @@ fn paint(
     for btn in buttons.iter_mut().filter(|b| indexes.contains(&b.index)) {
         btn.color_bg = color_bg.to_string();
         btn.color_text = color_text.to_string();
+        // Un color de la paleta es un color adaptado al tema: deja de ser
+        // "exacto" salvo que el boton lleve degradado (que siempre lo es).
+        btn.style.exact = false;
         painted += 1;
     }
     Ok(painted)

@@ -10,7 +10,7 @@ use tauri::State;
 
 const CHECK_INTERVAL_SECS: i64 = 12 * 60 * 60;
 const LATEST_RELEASE_URL: &str =
-    "https://api.github.com/repos/yosoyluisfernando/LF-Botonera-de-efectos/releases/latest";
+    "https://api.github.com/repos/danilo-wenner-1/LF-Botonera-de-efectos/releases/latest";
 
 #[derive(Deserialize)]
 struct GithubRelease {

@@ -19,6 +19,8 @@ pub enum PlaybackGroup {
 /// Estado de un boton en reproduccion: flags atomicos de control + tiempo real.
 pub struct ButtonState {
     pub group: PlaybackGroup,
+    /// El bus por el que suena: el de su grupo o el carril de su pestaña.
+    pub bus: crate::engine::console::BusId,
     pub done_flag: Arc<AtomicBool>,
     pub stop_flag: Arc<AtomicBool>,
     /// Presente solo cuando el ButtonSource fue creado con fade_out_stop > 0.
@@ -186,6 +188,7 @@ mod tests {
     fn state_started_ago(duration: f64, loop_mode: bool, elapsed: Duration) -> ButtonState {
         ButtonState {
             group: PlaybackGroup::Main,
+            bus: crate::engine::console::BusId::Efectos,
             done_flag: Arc::new(AtomicBool::new(false)),
             stop_flag: Arc::new(AtomicBool::new(false)),
             fade_out_flag: None,

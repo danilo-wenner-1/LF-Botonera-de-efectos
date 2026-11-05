@@ -94,3 +94,7 @@ PUBLICAR_RELEASE.bat
 PUBLICAR_RELEASE.ps1
 Resumen.md
 *.local
+
+# FFmpeg incluido con la app (~100 MB, supera el limite de GitHub).
+# Se descarga con scripts/fetch-ffmpeg.ps1 antes de compilar.
+src-tauri/binaries/ffmpeg-*

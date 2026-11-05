@@ -10,7 +10,7 @@ use crate::engine::input::midi_rules;
 use crate::engine::input::rules as shortcut_rules;
 use crate::ipc::cmd_grid::{active_paleta, save_grid};
 use crate::model::grid::GridState;
-use crate::model::{AppConfig, ButtonData, ButtonVisual, MidiBinding, PaletaData};
+use crate::model::{AppConfig, ButtonData, ButtonStyle, ButtonVisual, MidiBinding, PaletaData};
 
 #[tauri::command]
 pub fn update_button_data(
@@ -30,6 +30,7 @@ pub fn update_button_data(
     midi: Option<MidiBinding>,
     replace_shortcut: Option<bool>,
     visual: Option<ButtonVisual>,
+    style: Option<ButtonStyle>,
     app: tauri::AppHandle,
     state: tauri::State<AppState>,
 ) -> Result<GridState, String> {
@@ -42,6 +43,9 @@ pub fn update_button_data(
     }
     if let Some(value) = visual.as_ref() {
         crate::engine::visuals::validate_button_visual(value)?;
+    }
+    if let Some(value) = style.as_ref() {
+        value.validate()?;
     }
     let current = active_button(&cfg, index);
     let current_type = current.map(|b| b.type_field.as_str()).unwrap_or("audio");
@@ -101,6 +105,9 @@ pub fn update_button_data(
     }
     if let Some(value) = visual {
         btn.visual = value;
+    }
+    if let Some(value) = style {
+        btn.style = value;
     }
     let grid = save_grid(&mut cfg)?;
     drop(cfg);

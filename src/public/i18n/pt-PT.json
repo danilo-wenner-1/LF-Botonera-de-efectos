@@ -25,7 +25,8 @@
       "edit": "Editar Separador...",
       "export": "Exportar (.bdelf)",
       "import": "Importar (.bdelf)",
-      "delete": "Eliminar Separador"
+      "delete": "Eliminar Separador",
+      "shortcut": "Atribuir atalho de teclado..."
     }
   },
   "grid": {
@@ -39,7 +40,10 @@
     "cols_label": "Colunas (H):",
     "bg_color": "Cor de fundo:",
     "text_color": "Cor do texto:",
-    "save": "Guardar"
+    "save": "Guardar",
+    "audio_out": "Saída de áudio deste separador:",
+    "audio_out_main": "Saída principal (a das Definições)",
+    "audio_out_default": "Predefinida do sistema"
   },
   "profiles": {
     "tooltip": "Opções de Perfis",
@@ -116,7 +120,8 @@
     "donate_btn": "☕ Apoie o criador aqui",
     "toolbar_buttons": "Botões da barra superior:",
     "show_console": "Mostrar a Consola de áudio",
-    "show_fixed_panel": "Mostrar o Painel fixo"
+    "show_fixed_panel": "Mostrar o Painel fixo",
+    "show_bottom_bar": "Mostrar a barra inferior (relógio, modos, Mic, volume, Parar tudo)"
   },
   "audio_device": {
     "title": "Saída de áudio indisponível",
@@ -188,25 +193,25 @@
     "ready": "Tudo pronto."
   },
   "library": {
-      "window_title": "Biblioteca — LF Botoneira de Efeitos",
-      "open_window": "Abrir Biblioteca",
-      "loading": "A carregar Biblioteca…",
-      "refresh": "Atualizar",
-      "show_all": "Mostrar tudo",
-      "processing_center": "Centro de processamento",
-      "local_navigator": "Navegador local",
-      "no_results": "Não existem itens para mostrar.",
-      "folder_items": "{count} itens na pasta",
-      "visible_items": "{count} itens carregados",
-      "files_count": "{count} ficheiros",
-      "col_name": "Nome",
-      "col_path": "Caminho completo",
-      "col_title": "Título",
-      "col_artist": "Artista",
-      "col_album": "Álbum",
-      "col_genre": "Género",
-      "col_year": "Ano",
-      "col_duration": "Duração",
+    "window_title": "Biblioteca — LF Botoneira de Efeitos",
+    "open_window": "Abrir Biblioteca",
+    "loading": "A carregar Biblioteca…",
+    "refresh": "Atualizar",
+    "show_all": "Mostrar tudo",
+    "processing_center": "Centro de processamento",
+    "local_navigator": "Navegador local",
+    "no_results": "Não existem itens para mostrar.",
+    "folder_items": "{count} itens na pasta",
+    "visible_items": "{count} itens carregados",
+    "files_count": "{count} ficheiros",
+    "col_name": "Nome",
+    "col_path": "Caminho completo",
+    "col_title": "Título",
+    "col_artist": "Artista",
+    "col_album": "Álbum",
+    "col_genre": "Género",
+    "col_year": "Ano",
+    "col_duration": "Duração",
     "search_title": "Pesquisa",
     "search_title_compact": "Pesquisa",
     "search_placeholder": "Pesquisar áudio…",
@@ -831,9 +836,15 @@
     "library_rename_locked": "O ficheiro está a ser utilizado por outra aplicação. Feche-o e tente novamente.",
     "library_rename_failed": "Não foi possível mudar o nome do ficheiro; o nome anterior foi mantido.",
     "library_rename_recovery_failed": "Não foi possível concluir a recuperação automática. Não feche a aplicação e verifique o ficheiro original.",
-    "library_rename_journal_invalid": "Não foi possível preparar o registo de segurança para mudar o nome do ficheiro."
-  }
-,
+    "library_rename_journal_invalid": "Não foi possível preparar o registo de segurança para mudar o nome do ficheiro.",
+    "audio_converting": "Este efeito está a ser preparado (conversão de M4A). Tente novamente dentro de alguns segundos.",
+    "audio_convert_failed": "Não foi possível converter o ficheiro: pode estar danificado ou num formato incompatível.",
+    "audio_converter_missing": "Falta o conversor de áudio (FFmpeg) incluído na aplicação.",
+    "button_without_audio": "Este botão não tem um ficheiro de áudio atribuído.",
+    "invalid_hex_color": "Código de cor inválido.",
+    "invalid_gradient": "Gradiente inválido: escolha a segunda cor.",
+    "invalid_font_size": "Tamanho de texto fora do intervalo (8–48 px)."
+  },
   "mic": {
     "label": "Mic",
     "settings": "Premir para falar · Mic",
@@ -869,5 +880,46 @@
     "input_format": "O formato desta entrada de microfone não está disponível.",
     "unavailable": "O controlo de Mic não está disponível.",
     "input_required": "Mic precisa de uma pressão e da respetiva libertação."
+  },
+  "tab_outputs": {
+    "title": "Saída do separador indisponível",
+    "body": "Estes separadores não podem tocar pela saída escolhida. Entretanto, os efeitos tocam pela saída principal, sem cortes.",
+    "missing": "não está ligada",
+    "too_many": "foi atingido o máximo de 8 saídas diferentes",
+    "use_main": "Usar a saída principal em todos",
+    "use_selected": "Atribuir",
+    "keep": "Manter (volta sozinha ao religar)",
+    "unavailable": "está a ser usada por outro programa ou não foi possível abri-la"
+  },
+  "font_size": {
+    "button": "Tamanho do texto do botão:",
+    "tab": "Tamanho de texto predefinido dos botões:",
+    "tab_hint": "Os botões com tamanho próprio mantêm-no; os restantes usam este.",
+    "increase": "Aumentar tamanho do texto",
+    "decrease": "Diminuir tamanho do texto",
+    "reset": "Voltar ao predefinido",
+    "from_tab": "Do separador",
+    "from_global": "Global"
+  },
+  "colors": {
+    "fill": "Preenchimento:",
+    "solid": "Cor sólida",
+    "horizontal": "Gradiente horizontal",
+    "vertical": "Gradiente vertical",
+    "diagonal": "Gradiente diagonal ↘",
+    "diagonal_inv": "Gradiente diagonal ↗",
+    "bg2": "Segunda cor de fundo:",
+    "text_gradient": "Texto em gradiente (segunda cor):",
+    "exact": "Cor exata (não adaptar ao tema)",
+    "preview": "Pré-visualização:",
+    "hex_hint": "Código HEX: #RRGGBB (também pode colar)",
+    "hex_invalid": "Há um código de cor inválido. Use o formato #RRGGBB, por exemplo #3498DB."
+  },
+  "search": {
+    "tooltip": "Procurar efeitos em todos os separadores",
+    "placeholder": "Procurar por nome, ficheiro, separador ou posição…",
+    "hint": "Exemplos: «aplausos», «genéricos 5», «12».",
+    "no_results": "Nenhum efeito encontrado.",
+    "location": "Separador {n}: {tab} · botão {index} (linha {row}, coluna {col})"
   }
 }

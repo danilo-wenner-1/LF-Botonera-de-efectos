@@ -13,7 +13,7 @@
 use crate::domain::playback::source as playback_source;
 use crate::engine::audio::attach::{attach_button, AttachArgs};
 use crate::engine::audio::button::{ButtonState, ButtonStateMap};
-use crate::engine::audio::routing::bus_for;
+use crate::engine::audio::routing::resolve;
 use crate::engine::cache::preload::PreloadCache;
 use crate::engine::console::ConsoleEngine;
 use std::sync::{Arc, Mutex};
@@ -48,7 +48,8 @@ fn rebuild_one(
     cache: &Arc<Mutex<PreloadCache>>,
 ) -> Option<ButtonState> {
     let replay = state.replay.clone()?;
-    let bus = console.bus(bus_for(false, state.group))?;
+    // A su MISMO bus: con salidas por pestaña, el de su grupo no es el suyo.
+    let (bus_id, bus) = resolve(console, state.bus)?;
     let at = resume_position(state);
     let source = playback_source::build_seek(
         cache,
@@ -65,6 +66,7 @@ fn rebuild_one(
         &bus,
         source,
         AttachArgs {
+            bus: bus_id,
             // El volumen en vivo, no el de la ficha: el operador pudo haberlo
             // movido despues de dispararlo (la barra de pre-escucha lo hace).
             volume: state.live_volume(),

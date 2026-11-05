@@ -34,6 +34,7 @@ import { wireRuntimeEvents } from './runtimeEvents.js';
 import { initLibraryWindowOpen } from './libraryWindowOpen.js';
 import { initBackupRestore } from './backupRestoreModal.js';
 import { startupReady, startupStage } from './startupProgress.js';
+import { initRadioFeatures, updateRadioFeatures } from './radioFeatures.js';
 let _closeWired = false;
 /** Punto único de arranque llamado desde main.js al cargar el DOM. */
 export async function startApp() {
@@ -145,6 +146,7 @@ async function _refresh() {
     updateProfiles(config, _refresh);
     updateShortcuts(config, _refresh);
     _applyButtonTextSize(config.button_text_size);
+    updateRadioFeatures(config);
     refreshBottomBar();
     drawGrid(grid, _refresh);
     drawFixedPanel(fixedPanel);
@@ -169,6 +171,7 @@ function _initModules(config, grid, fixedPanel) {
     initSettingsModal(_refresh);
     initMapping(_refresh);
     initUpdateNotifier();
+    initRadioFeatures(config, _refresh);
 }
 
 async function _openDockedEditor(payload) {

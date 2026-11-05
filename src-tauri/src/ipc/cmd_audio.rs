@@ -50,6 +50,7 @@ pub fn apply_configured_audio_devices(
         &status.pre
     };
     state.audio.lock().unwrap().set_pre_device(effective_pre)?;
+    crate::ipc::cmd_tab_outputs::apply(&state);
     Ok(status)
 }
 
@@ -60,7 +61,12 @@ pub fn set_audio_device(device_name: String, state: tauri::State<AppState>) -> R
     if let Some(p) = cfg.active_profile_mut() {
         p.audio.out_main = device_name;
     }
-    config::save_config(&cfg)
+    config::save_config(&cfg)?;
+    drop(cfg);
+    // Una pestaña que pedia la tarjeta que ahora es la principal deja su
+    // carril; una que pedia la antigua principal pasa a tener uno.
+    crate::ipc::cmd_tab_outputs::apply(&state);
+    Ok(())
 }
 
 /// Reproduce un archivo directo, usado por pre-escucha. Los botones normales

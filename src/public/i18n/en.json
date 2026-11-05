@@ -25,7 +25,8 @@
       "edit": "Edit Tab...",
       "export": "Export (.bdelf)",
       "import": "Import (.bdelf)",
-      "delete": "Delete Tab"
+      "delete": "Delete Tab",
+      "shortcut": "Assign keyboard shortcut..."
     }
   },
   "grid": {
@@ -39,7 +40,10 @@
     "cols_label": "Columns (H):",
     "bg_color": "Background color:",
     "text_color": "Text color:",
-    "save": "Save"
+    "save": "Save",
+    "audio_out": "Audio output for this tab:",
+    "audio_out_main": "Main output (from Settings)",
+    "audio_out_default": "System default"
   },
   "profiles": {
     "tooltip": "Profile Options",
@@ -116,7 +120,8 @@
     "donate_btn": "☕ Support the creator here",
     "toolbar_buttons": "Top bar buttons:",
     "show_console": "Show the Audio console",
-    "show_fixed_panel": "Show the Fixed panel"
+    "show_fixed_panel": "Show the Fixed panel",
+    "show_bottom_bar": "Show the bottom bar (clock, modes, Mic, volume, Stop all)"
   },
   "audio_device": {
     "title": "Audio output unavailable",
@@ -188,25 +193,25 @@
     "ready": "Ready."
   },
   "library": {
-      "window_title": "Library — LF Soundboard",
-      "open_window": "Open Library",
-      "loading": "Loading Library…",
-      "refresh": "Refresh",
-      "show_all": "Show all",
-      "processing_center": "Processing Center",
-      "local_navigator": "Local navigator",
-      "no_results": "There are no items to display.",
-      "folder_items": "{count} items in folder",
-      "visible_items": "{count} loaded items",
-      "files_count": "{count} files",
-      "col_name": "Name",
-      "col_path": "Full path",
-      "col_title": "Title",
-      "col_artist": "Artist",
-      "col_album": "Album",
-      "col_genre": "Genre",
-      "col_year": "Year",
-      "col_duration": "Duration",
+    "window_title": "Library — LF Soundboard",
+    "open_window": "Open Library",
+    "loading": "Loading Library…",
+    "refresh": "Refresh",
+    "show_all": "Show all",
+    "processing_center": "Processing Center",
+    "local_navigator": "Local navigator",
+    "no_results": "There are no items to display.",
+    "folder_items": "{count} items in folder",
+    "visible_items": "{count} loaded items",
+    "files_count": "{count} files",
+    "col_name": "Name",
+    "col_path": "Full path",
+    "col_title": "Title",
+    "col_artist": "Artist",
+    "col_album": "Album",
+    "col_genre": "Genre",
+    "col_year": "Year",
+    "col_duration": "Duration",
     "search_title": "Search",
     "search_title_compact": "Search",
     "search_placeholder": "Search audio…",
@@ -831,9 +836,15 @@
     "library_rename_locked": "The file is in use by another application. Close it and try again.",
     "library_rename_failed": "The file could not be renamed; its previous name was preserved.",
     "library_rename_recovery_failed": "Automatic rename recovery could not be completed. Do not close the app and check the original file.",
-    "library_rename_journal_invalid": "The safety record required to rename the file could not be prepared."
-  }
-,
+    "library_rename_journal_invalid": "The safety record required to rename the file could not be prepared.",
+    "audio_converting": "This effect is being prepared (M4A conversion). Try again in a few seconds.",
+    "audio_convert_failed": "The file could not be converted: it may be damaged or in an unsupported format.",
+    "audio_converter_missing": "The bundled audio converter (FFmpeg) is missing.",
+    "button_without_audio": "This button has no audio file assigned.",
+    "invalid_hex_color": "Invalid color code.",
+    "invalid_gradient": "Invalid gradient: choose the second color.",
+    "invalid_font_size": "Text size out of range (8–48 px)."
+  },
   "mic": {
     "label": "Mic",
     "settings": "Push to talk · Mic",
@@ -869,5 +880,46 @@
     "input_format": "This microphone input format is not available.",
     "unavailable": "Mic control is unavailable.",
     "input_required": "Mic requires a press and release."
+  },
+  "tab_outputs": {
+    "title": "Tab output unavailable",
+    "body": "These tabs cannot play through the output they chose. Meanwhile their effects play through the main output, without interruption.",
+    "missing": "is not connected",
+    "too_many": "the maximum of 8 different outputs was reached",
+    "use_main": "Use the main output for all",
+    "use_selected": "Assign",
+    "keep": "Keep (restores itself when reconnected)",
+    "unavailable": "is in use by another program or could not be opened"
+  },
+  "font_size": {
+    "button": "Button text size:",
+    "tab": "Default text size for buttons:",
+    "tab_hint": "Buttons with their own size keep it; the rest use this one.",
+    "increase": "Increase text size",
+    "decrease": "Decrease text size",
+    "reset": "Back to default",
+    "from_tab": "From tab",
+    "from_global": "Global"
+  },
+  "colors": {
+    "fill": "Fill:",
+    "solid": "Solid color",
+    "horizontal": "Horizontal gradient",
+    "vertical": "Vertical gradient",
+    "diagonal": "Diagonal gradient ↘",
+    "diagonal_inv": "Diagonal gradient ↗",
+    "bg2": "Second background color:",
+    "text_gradient": "Gradient text (second color):",
+    "exact": "Exact color (do not adapt to theme)",
+    "preview": "Preview:",
+    "hex_hint": "HEX code: #RRGGBB (paste is supported)",
+    "hex_invalid": "There is an invalid color code. Use the #RRGGBB format, e.g. #3498DB."
+  },
+  "search": {
+    "tooltip": "Search effects in all tabs",
+    "placeholder": "Search by name, file, tab or position…",
+    "hint": "Examples: “applause”, “jingles 5”, “12”.",
+    "no_results": "No effect found.",
+    "location": "Tab {n}: {tab} · button {index} (row {row}, column {col})"
   }
 }

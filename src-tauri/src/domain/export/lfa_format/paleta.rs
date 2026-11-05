@@ -25,6 +25,7 @@ pub fn to_lfa_paleta(p: &PaletaData) -> LfaPaleta {
         midi: p.midi.clone(),
         tab_bg: p.tab_bg.clone(),
         tab_text: p.tab_text.clone(),
+        font_size: p.font_size,
         botones,
     }
 }
@@ -47,6 +48,7 @@ fn button_to_lfa(id: u32, b: &ButtonData) -> LfaButton {
         shortcut: b.shortcut.clone(),
         midi: b.midi.clone(),
         visual: b.visual.clone(),
+        style: b.style.clone(),
     }
 }
 
@@ -68,6 +70,7 @@ fn empty_button(id: u32) -> LfaButton {
         shortcut: String::new(),
         midi: Default::default(),
         visual: Default::default(),
+        style: Default::default(),
     }
 }
 
@@ -94,6 +97,7 @@ pub fn from_lfa_paleta(p: LfaPaleta, id: String) -> PaletaData {
         midi: p.midi,
         tab_bg: p.tab_bg,
         tab_text: p.tab_text,
+        font_size: p.font_size,
         botones,
     }
 }
@@ -123,6 +127,7 @@ fn button_from_lfa(b: LfaButton, paleta_id: &str) -> ButtonData {
         shortcut: b.shortcut,
         midi: b.midi,
         visual: b.visual,
+        style: b.style,
     }
 }
 
@@ -151,6 +156,7 @@ mod tests {
             midi: Default::default(),
             tab_bg: String::new(),
             tab_text: String::new(),
+            font_size: 0,
             botones: vec![button],
         };
 

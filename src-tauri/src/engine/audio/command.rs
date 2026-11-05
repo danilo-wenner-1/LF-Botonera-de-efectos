@@ -49,6 +49,10 @@ pub enum AudioCommand {
         bus: BusId,
         routing: Routing,
     },
+    /// Varios ruteos de una vez (los carriles de las pestañas).
+    SetRoutings {
+        routings: Vec<(BusId, Routing)>,
+    },
     SetVolume {
         id: String,
         volume: f32,

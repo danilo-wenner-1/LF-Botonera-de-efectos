@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "LF Botonera de Efectos",
-  "version": "1.5.0",
-  "identifier": "io.github.yosoyluisfernando.LF-Botonera-de-efectos",
+  "productName": "LF Botonera Radio",
+  "version": "1.5.1",
+  "identifier": "io.github.danilo-wenner-1.LF-Botonera-Radio",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
@@ -13,7 +13,7 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "LF Botonera de Efectos",
+        "title": "LF Botonera Radio",
         "width": 1000,
         "height": 700,
         "center": true,
@@ -29,7 +29,7 @@
     "active": true,
     "targets": "all",
     "publisher": "Luis Fernando Velásquez",
-    "homepage": "https://github.com/yosoyluisfernando/LF-Botonera-de-efectos",
+    "homepage": "https://github.com/danilo-wenner-1/LF-Botonera-de-efectos",
     "copyright": "Copyright © 2026 Luis Fernando Velásquez",
     "license": "GPL-3.0-or-later",
     "licenseFile": "../LICENSE",
@@ -60,13 +60,13 @@
     },
     "windows": {
       "wix": {
-        "upgradeCode": "43888972-c5a4-5e8d-a996-ca913f3b6d8e"
+        "upgradeCode": "125d7793-2772-4037-b92d-b160acf85d6d"
       },
       "nsis": {
         "installMode": "perMachine"
       }
     },
     "shortDescription": "Soundboard for radio broadcasters",
-    "longDescription": "LF Botonera de Efectos — a Tauri/Rust soundboard for radio stations and live streaming. Supports unlimited profiles, tabs, keyboard shortcuts, dynamic voice-overs and weather announcements. Compatible with LF Automatizador file formats."
+    "longDescription": "LF Botonera Radio (modified fork of LF Botonera de Efectos by Luis Fernando Velásquez, GPL-3.0) — a Tauri/Rust soundboard for radio stations and live streaming. Supports unlimited profiles, tabs, keyboard shortcuts, dynamic voice-overs and weather announcements. Compatible with LF Automatizador file formats."
   }
 }

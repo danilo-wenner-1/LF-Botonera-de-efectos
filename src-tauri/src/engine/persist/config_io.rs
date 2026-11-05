@@ -13,7 +13,9 @@ use std::path::PathBuf;
 
 // ─── Rutas ────────────────────────────────────────────────────────────────────
 
-/// Windows: %APPDATA%\LF Botonera\   Linux: ~/.config/LF Botonera/
+/// Windows: %APPDATA%\LF Botonera Radio\   Linux: ~/.config/LF Botonera Radio/
+/// Carpeta propia de esta version modificada: no toca la configuracion de una
+/// instalacion oficial de LF Botonera de Efectos en el mismo equipo.
 pub fn get_data_dir() -> PathBuf {
     #[cfg(target_os = "windows")]
     let base = std::env::var("APPDATA")
@@ -26,7 +28,7 @@ pub fn get_data_dir() -> PathBuf {
         .or_else(|_| std::env::var("HOME").map(|h| PathBuf::from(h).join(".config")))
         .unwrap_or_else(|_| std::env::current_dir().unwrap_or_default());
 
-    base.join("LF Botonera")
+    base.join("LF Botonera Radio")
 }
 
 // ─── Formatos legados (sólo para migración) ───────────────────────────────────
@@ -136,6 +138,7 @@ fn migrate(old: LegacyConfig) -> AppConfig {
                         shortcut: String::new(),
                         midi: Default::default(),
                         visual: Default::default(),
+                        style: Default::default(),
                     })
                     .collect();
             }

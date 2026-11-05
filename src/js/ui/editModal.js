@@ -20,6 +20,10 @@ import {
 } from './editVolumeControl.js';
 import { currentEditVisual, initEditVisual, refreshEditVisualPreview } from './visualSelector.js';
 import { getMidiField, initMidiField, setMidiField } from './midiControls.js';
+import {
+    currentEditStyle, editStyleError, initEditStyle, syncEditStyleFromInputs,
+} from './editStyle.js';
+import { currentTabFont } from './grid.js';
 
 /**
  * Abre el modal de edición para el botón indicado.
@@ -59,6 +63,7 @@ export async function openEditModal(index, btnData, onSave, target = 'grid') {
         'button',
     );
     await refreshColorInputs();
+    initEditStyle(btnData, target === 'fixed' ? 0 : currentTabFont());
     _applyPathHint(type0, pathEl);
     syncEditVolumeControl(type0);
     if (!btnData) _applySuggestedStyle();
@@ -109,6 +114,7 @@ export async function openEditModal(index, btnData, onSave, target = 'grid') {
                 document.getElementById('edit-bg-color').value   = updated.color_bg;
                 document.getElementById('edit-text-color').value = updated.color_text;
                 await refreshColorInputs();
+                syncEditStyleFromInputs();
             }
         } catch (_) { /* Usuario canceló el diálogo */ }
     };
@@ -137,6 +143,11 @@ export async function openEditModal(index, btnData, onSave, target = 'grid') {
                 await appAlert(t(`edit_modal.missing_${sel}`));
                 return;
             }
+            const styleError = editStyleError();
+            if (styleError) {
+                await appAlert(styleError);
+                return;
+            }
             const updateCommand = target === 'fixed' ? 'update_fixed_button' : 'update_button_data';
             await invokeShortcutSave(updateCommand, {
                 index,
@@ -150,6 +161,7 @@ export async function openEditModal(index, btnData, onSave, target = 'grid') {
                 shortcut:  document.getElementById('edit-shortcut').value,
                 midi:      getMidiField('edit-midi'),
                 visual:    currentEditVisual(),
+                style:     currentEditStyle(),
             });
             modal.classList.add('hidden');
             onSave?.();
@@ -166,6 +178,7 @@ async function _applySuggestedStyle() {
         const style = await invoke('suggest_button_style');
         document.getElementById('edit-bg-color').value = style.color_bg;
         document.getElementById('edit-text-color').value = _themeTextColor();
+        syncEditStyleFromInputs();
     } catch (_) { /* Mantiene los valores por defecto si Rust no responde. */ }
 }
 

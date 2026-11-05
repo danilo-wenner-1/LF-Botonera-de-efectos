@@ -5,6 +5,7 @@
  * Solo dibuja (Regla 4): la preferencia la guarda Rust.
  */
 import { invoke } from '../bridge/api.js';
+import { applyBottomBar } from './radioFeatures.js';
 
 /**
  * Los que se pueden esconder: el botón de la barra, su casilla en Ajustes y el
@@ -17,11 +18,16 @@ import { invoke } from '../bridge/api.js';
 const BUTTONS = [
     { bus: 'console', btn: 'btn-console', box: 'config-show-console', flag: 'show_console_button' },
     { bus: 'fixed_panel', btn: 'btn-fixed-panel', box: 'config-show-fixed-panel', flag: 'show_fixed_panel_button' },
+    // La barra inferior entera (Play/modos, Mic, volumen, reloj, Detener todo).
+    // Ocultarla no quita nada: Detener todo y el resto siguen en sus atajos, y
+    // esta casilla la devuelve.
+    { bus: 'bottom_bar', btn: null, box: 'config-show-bottom-bar', flag: 'show_bottom_bar' },
 ];
 
 /** Aplica la configuración a la barra. Se llama al arrancar y al guardar. */
 export function applyToolbarButtons(config) {
-    for (const b of BUTTONS) _toggle(b.btn, config[b.flag]);
+    for (const b of BUTTONS) if (b.btn) _toggle(b.btn, config[b.flag]);
+    applyBottomBar(config);
 }
 
 /** Pone las casillas de Ajustes como está la configuración. */

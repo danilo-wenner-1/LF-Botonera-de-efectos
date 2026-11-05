@@ -36,6 +36,9 @@ pub struct LfaButton {
         skip_serializing_if = "crate::model::ButtonVisual::is_default"
     )]
     pub visual: crate::model::ButtonVisual,
+    /// Solo la Botonera lo escribe; el LFA lo ignora.
+    #[serde(default, skip_serializing_if = "crate::model::ButtonStyle::is_default")]
+    pub style: crate::model::ButtonStyle,
 }
 
 pub(super) fn default_type() -> String {
@@ -65,9 +68,15 @@ pub struct LfaPaleta {
     pub tab_bg: String,
     #[serde(default, rename = "tabText")]
     pub tab_text: String,
+    /// Solo la Botonera lo escribe; el LFA lo ignora.
+    #[serde(default, rename = "fontSize", skip_serializing_if = "is_zero")]
+    pub font_size: u32,
     pub botones: Vec<LfaButton>,
 }
 
+fn is_zero(v: &u32) -> bool {
+    *v == 0
+}
 pub(super) fn default_dim() -> u32 {
     5
 }

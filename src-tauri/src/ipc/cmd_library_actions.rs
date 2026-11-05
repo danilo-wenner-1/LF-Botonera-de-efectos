@@ -118,6 +118,7 @@ mod tests {
             midi: Default::default(),
             tab_bg: String::new(),
             tab_text: String::new(),
+            font_size: 0,
             botones: Vec::new(),
         };
         paleta

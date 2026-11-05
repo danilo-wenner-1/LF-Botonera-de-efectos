@@ -141,6 +141,7 @@ mod tests {
             midi: Default::default(),
             tab_bg: String::new(),
             tab_text: String::new(),
+            font_size: 0,
             botones: indexes
                 .iter()
                 .map(|i| new_button("paleta", *i, "B", "#111", "#fff"))

@@ -1,3 +1,80 @@
+# LF Botonera Radio — versión modificada (no oficial)
+
+> Esta es una **versión modificada** de [LF Botonera de Efectos](https://github.com/yosoyluisfernando/LF-Botonera-de-efectos),
+> creada por **Luis Fernando Velásquez** y publicada bajo licencia GPL-3.0. Está adaptada
+> para usarla como **botonera de efectos de radio**. No es la versión oficial: si
+> encuentras un problema, repórtalo en este repositorio y no en el original.
+
+## 📥 Cómo instalarla (Windows 10/11)
+
+1. Entra en **[Releases](https://github.com/danilo-wenner-1/LF-Botonera-de-efectos/releases/latest)**
+   y descarga el archivo **`LF Botonera Radio_1.5.1_x64-setup.exe`**.
+2. Ábrelo con doble clic.
+3. Windows probablemente mostrará **«Windows protegió su PC»** (SmartScreen). Es normal:
+   el instalador no tiene firma digital paga. Pulsa **Más información → Ejecutar de todas formas**.
+4. Sigue el asistente y abre **LF Botonera Radio** desde el menú Inicio.
+
+Se instala **aparte** de la versión oficial, que sigue intacta si la tienes. Guarda su
+configuración en otra carpeta (`%APPDATA%\LF Botonera Radio`), así que **empieza vacía**.
+Si quieres traer tus botoneras de la versión oficial, en la oficial usa *clic derecho en una
+pestaña → Exportar (.bdelf)* (o *Perfil → Exportar*) y aquí *Importar*.
+
+## ✨ Qué tiene de nuevo
+
+| Función | Dónde está |
+|---|---|
+| **Salida de audio propia por pestaña** (principal, auriculares, otra placa…) | Clic derecho en la pestaña → *Editar pestaña* → «Salida de audio de esta pestaña» |
+| **Buscador de efectos** en todas las pestañas | Botón 🔍 a la izquierda de las pestañas. Ejemplos: `aplausos`, `cortinas 5`, `12` |
+| **Cambiar de pestaña con la rueda del mouse** | Rueda arriba/abajo con el cursor sobre la barra de pestañas |
+| **Atajo de teclado por pestaña** (p. ej. Ctrl+1) | Clic derecho en la pestaña → *Asignar atajo de teclado…* |
+| **Tamaño de texto por botón** (− / +) | Clic derecho en un botón → *Editar…* → «Tamaño de texto del botón» |
+| **Tamaño de texto por pestaña** | *Editar pestaña* → «Tamaño de texto predeterminado» |
+| **Colores HEX y degradados** de dos colores (fondo y texto), con vista previa | Clic derecho en un botón → *Editar…* |
+| **Ocultar la barra inferior** para tener más espacio | ⚙️ Ajustes → Principal → «Mostrar la barra inferior» |
+| **Archivos M4A** | Se cargan igual que un MP3. Los que no se pueden leer directo se convierten solos a MP3 en segundo plano |
+
+Notas:
+- Si la placa de sonido de una pestaña se desconecta, sus efectos **siguen sonando por la
+  salida principal** y la app avisa. Al reconectarla vuelve sola.
+- Con la barra inferior oculta, **Detener todo** sigue funcionando con su atajo de teclado
+  (⚙️ Ajustes → Atajos del Teclado).
+- Los colores escritos en HEX o en degradado se ven **exactos**. Los elegidos de la paleta
+  clásica se siguen adaptando al tema claro/oscuro, como antes.
+
+## 🧪 Qué conviene probar (primera versión)
+
+Esta versión todavía **no se probó con hardware real**. Si la usas, dinos cómo te fue con:
+
+1. Tres pestañas con tres salidas distintas, disparando a la vez, y desconectar una placa mientras suena.
+2. Cambiar de pestaña con la rueda y con atajos (Ctrl+1, Ctrl+2…). Intentar repetir un atajo debe avisar del conflicto.
+3. Tamaños de texto y colores: cerrar y volver a abrir la app y comprobar que todo se mantiene.
+4. El buscador con efectos repartidos en varias pestañas.
+5. **Archivos M4A** de distinto origen (descargados, de WhatsApp, de iPhone…) y tamaño.
+
+**Limitaciones conocidas:** las pestañas con salida propia no aparecen en el vúmetro ni
+en la Consola de audio, el Mic no las atenúa y no obedecen al volumen máster. Admite hasta
+8 placas distintas a la vez. Un M4A grande recién cargado puede tardar unos segundos en
+poder dispararse (aparece el aviso «se está preparando»).
+
+## 🛠️ Compilar desde el código
+
+Ver [COMPILAR.md](COMPILAR.md). En Windows hay que descargar antes FFmpeg con
+`scripts\fetch-ffmpeg.ps1`, porque supera el tamaño que GitHub permite guardar.
+
+## Créditos y licencia
+
+- Programa original: **LF Botonera de Efectos**, © Luis Fernando Velásquez —
+  <https://github.com/yosoyluisfernando/LF-Botonera-de-efectos>. Si te sirve, apoya al autor original.
+- Esta versión modificada se distribuye bajo la misma licencia **GPL-3.0-or-later** ([LICENSE](LICENSE)).
+  Los cambios están descritos en [CHANGELOG.md](CHANGELOG.md).
+- Incluye **FFmpeg** (GPL v3) para convertir archivos M4A. Ver [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+---
+
+*Debajo sigue el README original del proyecto.*
+
+---
+
 <div align="center">
   <img src="icono_circular.png" alt="Logo de LF Botonera de Efectos" width="96" height="96">
 

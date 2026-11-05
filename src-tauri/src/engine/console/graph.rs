@@ -35,7 +35,7 @@ pub fn rebuild(endpoints: &mut EndpointRegistry, state: &Arc<Mutex<ConsoleState>
 
     let program_device = program_device(&guard);
     open_program(endpoints, &mut guard, &program_device);
-    for bus in BusId::ALL {
+    for bus in BusId::every() {
         if bus != BusId::Programa {
             open_bus(endpoints, &mut guard, bus, &program_device);
         }
@@ -57,10 +57,9 @@ fn effective_of(state: &ConsoleState, bus: BusId, program_device: &str) -> Optio
 /// siguen haciendo falta. El efectivo y no el pedido: un bus que pidio la tarjeta
 /// del programa acaba sumado en el, y entonces no retiene tarjeta propia.
 fn live_routings(state: &ConsoleState, program_device: &str) -> Vec<(BusId, Routing)> {
-    BusId::ALL
-        .iter()
+    BusId::every()
         .filter(|bus| state.live.contains_key(bus))
-        .filter_map(|bus| effective_of(state, *bus, program_device).map(|r| (*bus, r)))
+        .filter_map(|bus| effective_of(state, bus, program_device).map(|r| (bus, r)))
         .collect()
 }
 
@@ -91,6 +90,10 @@ fn open_bus(
     let Some(routing) = effective_of(state, bus, program_device) else {
         return;
     };
+    // Un carril de pestaña sin tarjeta no existe: nadie lo ha pedido.
+    if !bus.wants_output(&routing) {
+        return;
+    }
     let (level_l, level_r, gain) = atomics(state, bus);
     let duck = bus.can_sum_into_program().then(|| super::duck::DuckStage {
         control: Arc::clone(&state.slots[&bus].duck),

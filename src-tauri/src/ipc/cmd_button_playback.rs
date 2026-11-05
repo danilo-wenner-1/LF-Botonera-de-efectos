@@ -108,6 +108,11 @@ fn play_file(
     if solo || mode == "stop_others" {
         flags.stop_other = true;
     }
+    // Un M4A que se esta convirtiendo (o que no se pudo convertir) no suena a
+    // medias: se dice por que, y la UI lo muestra.
+    if let Some(blocker) = crate::engine::audio::transcode::play_blocker(&path) {
+        return Err(blocker);
+    }
     // Edición por archivo (cue + ganancia) del editor de pistas, si sigue vigente.
     let edit = resolve_edit(&state.tracks, &path, duration);
     let button_volume = if btn.type_field == "random_folder" {

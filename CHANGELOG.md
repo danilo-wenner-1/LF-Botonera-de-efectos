@@ -32,6 +32,39 @@ directamente desde Windows:
 
 ## [Sin publicar]
 
+## [1.5.1] — 2026-11-04 · LF Botonera Radio (versión modificada no oficial)
+
+### Cambiado
+- La app se llama **LF Botonera Radio**, se instala aparte de la versión oficial y
+  guarda su configuración en `%APPDATA%\LF Botonera Radio`. Las actualizaciones
+  se buscan en el repositorio de esta versión modificada.
+
+### Añadido
+- **Salida de audio propia por pestaña:** cada pestaña puede sonar por una
+  tarjeta distinta (principal, auriculares, otra interfaz), sin afectar a las
+  demás. Se elige en *Editar pestaña*. Si la tarjeta se desconecta, sus efectos
+  pasan a la salida principal sin quedarse mudos, la app avisa y ofrece otra; al
+  reconectarla vuelve sola. Hasta 8 tarjetas distintas a la vez.
+- **Buscador global de efectos (🔍):** a la izquierda de las pestañas. Encuentra
+  efectos de cualquier pestaña por nombre, archivo, pestaña o posición
+  («aplausos», «cortinas 5»), sin tildes ni mayúsculas, y al elegir uno abre su
+  pestaña y lo resalta. No interrumpe lo que suena.
+- **Rueda del ratón sobre las pestañas:** arriba, pestaña anterior; abajo,
+  siguiente. Solo sobre la barra de pestañas.
+- **Atajo de teclado desde el clic derecho de la pestaña**, sin entrar en el
+  Modo Mapeo. Avisa si la combinación ya está en uso.
+- **Tamaño de texto por botón y por pestaña** con − / +. Los botones nuevos
+  usan el de su pestaña y los que tienen tamaño propio lo conservan. El texto
+  que no cabe se encoge en pantalla sin deformar el botón.
+- **Colores avanzados:** códigos HEX (escribir o pegar), degradados de dos
+  colores para el fondo y el texto (horizontal, vertical, diagonal), color
+  exacto sin adaptación al tema y vista previa en vivo.
+- **Barra inferior ocultable** (Ajustes → Principal) para ganar espacio para las
+  botoneras. Detener todo y el resto siguen en sus atajos.
+- **M4A/AAC con calidad completa:** AAC-LC y ALAC suenan directo; HE-AAC y los
+  archivos que no se pueden leer directo se convierten una sola vez a MP3
+  320 kbps con el FFmpeg incluido, en segundo plano. El original no se toca.
+
 ## [1.5.0] — 2026-10-11
 
 ### Añadido

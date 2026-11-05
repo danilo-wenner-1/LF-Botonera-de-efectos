@@ -95,6 +95,15 @@ Para verificar el inventario Node sin instalar paquetes adicionales:
 node -e "const p=require('./package-lock.json').packages; const x=Object.entries(p).filter(([k])=>k); console.log(x.length)"
 ```
 
+## FFmpeg
+
+En Windows la distribución incluye `ffmpeg.exe` (build «essentials» de
+www.gyan.dev, FFmpeg 9.0.2, licencia GPL v3, con libmp3lame) como programa
+independiente. La Botonera lo ejecuta como proceso aparte solo para convertir
+archivos M4A/AAC que no puede reproducir directamente. El texto de la licencia se
+instala como `legal/FFMPEG_LICENSE.txt`. Código fuente:
+https://github.com/FFmpeg/FFmpeg (commit 946fcce07b) y https://www.gyan.dev/ffmpeg/builds/.
+
 ## Informes completos
 
 Los textos y avisos se generan en modo estricto desde los archivos bloqueados:

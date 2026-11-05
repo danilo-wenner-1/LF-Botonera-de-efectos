@@ -6,7 +6,7 @@
 /// sumar fuentes. Que un boton tenga fades, trim, estado y grupo es asunto de
 /// quien sabe de botones, que es este motor.
 use crate::engine::audio::button::{ButtonSource, ButtonState, PlaybackGroup, ReplayInfo};
-use crate::engine::console::Bus;
+use crate::engine::console::{Bus, BusId};
 use crate::engine::dsp::fade::FadeRamp;
 use rodio::Source;
 use std::sync::atomic::{AtomicBool, AtomicU32};
@@ -23,6 +23,8 @@ pub struct AttachArgs {
     pub fade_out_end_s: f64,
     pub position_offset_s: f64,
     pub group: PlaybackGroup,
+    /// El bus que se le entrega (se recuerda para rehacerla en el mismo).
+    pub bus: BusId,
     /// Con que rehacer la fuente si su bus muere. `None` = no se puede (las
     /// locuciones van encadenadas y no se reposicionan).
     pub replay: Option<Arc<ReplayInfo>>,
@@ -70,6 +72,7 @@ pub fn attach_button(
     });
     ButtonState {
         group: args.group,
+        bus: args.bus,
         done_flag,
         stop_flag,
         fade_out_flag,

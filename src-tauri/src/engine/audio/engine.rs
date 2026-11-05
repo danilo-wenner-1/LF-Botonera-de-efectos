@@ -1,7 +1,7 @@
 use crate::engine::audio::button::{ButtonStateMap, PlaybackGroup};
 use crate::engine::audio::command::AudioCommand;
 use crate::engine::audio::last_pressed::LastPressedInfo;
-use crate::engine::audio::routing::bus_for;
+use crate::engine::audio::routing::{bus_for_button, TabBuses};
 use crate::engine::audio::thread as audio_thread;
 use crate::engine::cache::preload::PreloadCache;
 use crate::engine::cache::preloader::Preloader;
@@ -25,6 +25,10 @@ pub struct AudioEngine {
     preload_cache: Arc<Mutex<PreloadCache>>,
     preloader: Preloader,
     preload_enabled: Arc<AtomicBool>,
+    /// Carril de salida de cada pestaña con tarjeta propia (ver `tab_outputs`).
+    tab_buses: Mutex<TabBuses>,
+    /// tarjeta → carril del ultimo plan, para que el siguiente sea estable.
+    lane_devices: Mutex<HashMap<String, u8>>,
 }
 
 impl AudioEngine {
@@ -49,7 +53,27 @@ impl AudioEngine {
             preload_cache,
             preloader,
             preload_enabled,
+            tab_buses: Mutex::new(HashMap::new()),
+            lane_devices: Mutex::new(HashMap::new()),
         }
+    }
+
+    pub fn lane_devices(&self) -> HashMap<String, u8> {
+        self.lane_devices.lock().unwrap().clone()
+    }
+
+    /// Instala un plan de carriles: primero el ruteo (por el hilo de audio, en
+    /// orden con los Play) y despues el mapa que eligen los disparos.
+    pub fn set_tab_lanes(
+        &self,
+        plan: crate::domain::console::tab_lanes::LanePlan,
+    ) -> Result<(), String> {
+        self.send(AudioCommand::SetRoutings {
+            routings: plan.routings,
+        })?;
+        *self.tab_buses.lock().unwrap() = plan.paleta_bus;
+        *self.lane_devices.lock().unwrap() = plan.lanes;
+        Ok(())
     }
     pub fn preload_cache_handle(&self) -> Arc<Mutex<PreloadCache>> {
         Arc::clone(&self.preload_cache)
@@ -128,6 +152,7 @@ impl AudioEngine {
         if !to_pre && !id.starts_with("__") && group == PlaybackGroup::Main {
             *self.last_pressed.lock().unwrap() = Some(LastPressedInfo { id: id.clone() });
         }
+        let bus = bus_for_button(&self.tab_buses.lock().unwrap(), &id, to_pre, group);
         self.send(AudioCommand::Play {
             id,
             path: path.to_string(),
@@ -140,7 +165,7 @@ impl AudioEngine {
             cue_start_s,
             cue_end_s,
             file_gain,
-            bus: bus_for(to_pre, group),
+            bus,
             fade_in_s: fade.fade_in_s,
             fade_out_stop_s: fade.fade_out_stop_s,
             fade_out_end_s: fade.fade_out_end_s,
@@ -188,13 +213,14 @@ impl AudioEngine {
         duration: f64,
         group: PlaybackGroup,
     ) -> Result<(), String> {
+        // Una locucion suena por el bus de su boton, como cualquier otro.
+        let bus = bus_for_button(&self.tab_buses.lock().unwrap(), &id, false, group);
         self.send(AudioCommand::PlaySequence {
             id,
             paths,
             volume,
             duration,
-            // Una locucion suena por el bus de su grupo, como cualquier boton.
-            bus: bus_for(false, group),
+            bus,
             group,
         })
     }

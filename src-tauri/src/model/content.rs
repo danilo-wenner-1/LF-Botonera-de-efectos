@@ -6,7 +6,7 @@
 //! `ButtonData` es el ladrillo comun: lo usan la rejilla, el panel fijo y la cola
 //! del reproductor, por eso no cuelga de ningun modulo concreto.
 use crate::model::audio::AudioConfig;
-use crate::model::{ButtonVisual, MidiBinding};
+use crate::model::{ButtonStyle, ButtonVisual, MidiBinding};
 use serde::{Deserialize, Serialize};
 
 /// Un boton. Todos los campos nuevos llevan `#[serde(default)]` para que el LF
@@ -46,6 +46,9 @@ pub struct ButtonData {
     pub midi: MidiBinding,
     #[serde(default, skip_serializing_if = "ButtonVisual::is_default")]
     pub visual: ButtonVisual,
+    /// Tamaño de texto, degradados y color exacto (ver `model/button_style.rs`).
+    #[serde(default, skip_serializing_if = "ButtonStyle::is_default")]
+    pub style: ButtonStyle,
 }
 fn default_type() -> String {
     "audio".to_string()
@@ -73,7 +76,14 @@ pub struct PaletaData {
     pub tab_bg: String,
     #[serde(default)]
     pub tab_text: String,
+    /// Tamaño de texto predeterminado de los botones de esta pestaña, en px.
+    /// 0 = el tamaño global de Ajustes. Un boton con tamaño propio lo conserva.
+    #[serde(default, skip_serializing_if = "is_zero")]
+    pub font_size: u32,
     pub botones: Vec<ButtonData>,
+}
+fn is_zero(v: &u32) -> bool {
+    *v == 0
 }
 fn default_rows() -> u32 {
     5
@@ -100,3 +110,7 @@ pub struct ProfileData {
     #[serde(default)]
     pub fixed_buttons: Vec<ButtonData>,
 }
+
+#[cfg(test)]
+#[path = "content_tests.rs"]
+mod content_tests;

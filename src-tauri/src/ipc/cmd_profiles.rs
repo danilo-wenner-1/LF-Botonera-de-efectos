@@ -31,6 +31,7 @@ pub fn set_active_profile(id: String, state: tauri::State<AppState>) -> Result<A
     let next = cfg.clone();
     drop(cfg);
     state.console.set_fader(BusId::Programa, volume);
+    crate::ipc::cmd_tab_outputs::apply(&state);
     crate::engine::cache::warm::warm_for_strategy(&state);
     Ok(next)
 }
@@ -51,6 +52,7 @@ pub fn create_profile(name: String, state: tauri::State<AppState>) -> Result<App
         midi: Default::default(),
         tab_bg: String::new(),
         tab_text: String::new(),
+        font_size: 0,
         botones: Vec::new(),
     };
     cfg.profiles.push(ProfileData {

@@ -17,8 +17,26 @@ use tauri::Manager;
 
 /// Inicializa estado e hilos tras crear la ventana. Lo invoca `.setup` en lib.rs.
 pub fn on_setup(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>> {
+    crate::engine::audio::transcode::set_app(app.handle().clone());
     let state = app.state::<AppState>();
     let cfg = state.config.lock().unwrap();
+    // Los M4A de las botoneras que aun no tienen copia (configuracion importada,
+    // carpeta de conversiones borrada) se preparan en segundo plano al arrancar.
+    let candidates: Vec<String> = cfg
+        .profiles
+        .iter()
+        .flat_map(|p| p.paletas.iter().flat_map(|t| &t.botones).chain(&p.fixed_buttons))
+        .chain(&cfg.fixed_panel.global_buttons)
+        .map(|b| b.path.clone())
+        .filter(|p| crate::engine::audio::transcode::probe::is_candidate(p))
+        .collect();
+    let _ = std::thread::Builder::new()
+        .name("transcode-startup".into())
+        .spawn(move || {
+            for path in candidates {
+                let _ = crate::engine::audio::transcode::resolve(&path);
+            }
+        });
     let master_volume = cmd_master_volume::startup_volume(&cfg);
     let preload_budget = cfg.preload.ram_budget_mb;
     let preload_enabled = cfg.preload.enabled;
@@ -84,6 +102,9 @@ pub fn on_setup(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>> 
         Arc::clone(&state.console),
     );
     drop(engine);
+    // Salidas propias de las pestañas: despues del programa, porque un carril
+    // con la misma tarjeta que la principal no se abre (va por Efectos).
+    crate::ipc::cmd_tab_outputs::apply(&state);
     // Sincroniza el modo y la cola guardados con el motor del reproductor.
     crate::ipc::cmd_player::apply_startup(&state);
 

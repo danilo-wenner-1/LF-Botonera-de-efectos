@@ -81,6 +81,7 @@ pub fn import_tab(state: tauri::State<AppState>) -> Result<GridState, String> {
     if let Some(t) = tracks {
         export_tracks::restore(&state.tracks.lock().unwrap(), &t);
     }
+    crate::ipc::cmd_tab_outputs::apply(&state);
     Ok(grid)
 }
 
@@ -146,6 +147,7 @@ pub fn import_profile(state: tauri::State<AppState>) -> Result<(), String> {
     if let Some(t) = tracks {
         export_tracks::restore(&state.tracks.lock().unwrap(), &t);
     }
+    crate::ipc::cmd_tab_outputs::apply(&state);
     Ok(())
 }
 

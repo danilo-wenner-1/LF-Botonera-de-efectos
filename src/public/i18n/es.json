@@ -25,7 +25,8 @@
       "edit": "Editar Pestaña...",
       "export": "Exportar (.bdelf)",
       "import": "Importar (.bdelf)",
-      "delete": "Eliminar Pestaña"
+      "delete": "Eliminar Pestaña",
+      "shortcut": "Asignar atajo de teclado..."
     }
   },
   "grid": {
@@ -39,7 +40,10 @@
     "cols_label": "Columnas (H):",
     "bg_color": "Color de fondo:",
     "text_color": "Color de texto:",
-    "save": "Guardar"
+    "save": "Guardar",
+    "audio_out": "Salida de audio de esta pestaña:",
+    "audio_out_main": "Salida principal (la de Ajustes)",
+    "audio_out_default": "Predeterminada del sistema"
   },
   "profiles": {
     "tooltip": "Opciones de Perfiles",
@@ -116,7 +120,8 @@
     "donate_btn": "☕ Apoya al creador aquí",
     "toolbar_buttons": "Botones de la barra superior:",
     "show_console": "Mostrar la Consola de audio",
-    "show_fixed_panel": "Mostrar el Panel fijo"
+    "show_fixed_panel": "Mostrar el Panel fijo",
+    "show_bottom_bar": "Mostrar la barra inferior (reloj, modos, Mic, volumen, Detener todo)"
   },
   "audio_device": {
     "title": "Salida de audio no disponible",
@@ -188,25 +193,25 @@
     "ready": "Todo listo."
   },
   "library": {
-      "window_title": "Biblioteca — LF Botonera de Efectos",
-      "open_window": "Abrir Biblioteca",
-      "loading": "Cargando Biblioteca…",
-      "refresh": "Actualizar",
-      "show_all": "Mostrar todo",
-      "processing_center": "Centro de procesamiento",
-      "local_navigator": "Navegador local",
-      "no_results": "No hay elementos para mostrar.",
-      "folder_items": "{count} elementos en la carpeta",
-      "visible_items": "{count} elementos cargados",
-      "files_count": "{count} archivos",
-      "col_name": "Nombre",
-      "col_path": "Ruta completa",
-      "col_title": "Título",
-      "col_artist": "Artista",
-      "col_album": "Álbum",
-      "col_genre": "Género",
-      "col_year": "Año",
-      "col_duration": "Duración",
+    "window_title": "Biblioteca — LF Botonera de Efectos",
+    "open_window": "Abrir Biblioteca",
+    "loading": "Cargando Biblioteca…",
+    "refresh": "Actualizar",
+    "show_all": "Mostrar todo",
+    "processing_center": "Centro de procesamiento",
+    "local_navigator": "Navegador local",
+    "no_results": "No hay elementos para mostrar.",
+    "folder_items": "{count} elementos en la carpeta",
+    "visible_items": "{count} elementos cargados",
+    "files_count": "{count} archivos",
+    "col_name": "Nombre",
+    "col_path": "Ruta completa",
+    "col_title": "Título",
+    "col_artist": "Artista",
+    "col_album": "Álbum",
+    "col_genre": "Género",
+    "col_year": "Año",
+    "col_duration": "Duración",
     "search_title": "Buscador",
     "search_title_compact": "Buscar",
     "search_placeholder": "Buscar audio…",
@@ -831,9 +836,15 @@
     "library_rename_locked": "El archivo está siendo utilizado por otra aplicación. Ciérralo e inténtalo de nuevo.",
     "library_rename_failed": "No se pudo renombrar el archivo; se conservó el nombre anterior.",
     "library_rename_recovery_failed": "No se pudo completar la recuperación automática del renombrado. No cierres la aplicación y revisa el archivo original.",
-    "library_rename_journal_invalid": "No se pudo preparar el registro de seguridad para renombrar el archivo."
-  }
-,
+    "library_rename_journal_invalid": "No se pudo preparar el registro de seguridad para renombrar el archivo.",
+    "audio_converting": "Este efecto se está preparando (conversión de M4A). Vuelve a intentarlo en unos segundos.",
+    "audio_convert_failed": "No se pudo convertir el archivo: puede estar dañado o en un formato no compatible.",
+    "audio_converter_missing": "Falta el conversor de audio (FFmpeg) incluido con la aplicación.",
+    "button_without_audio": "Este botón no tiene un archivo de audio asignado.",
+    "invalid_hex_color": "Código de color no válido.",
+    "invalid_gradient": "Degradado no válido: elige el segundo color.",
+    "invalid_font_size": "Tamaño de texto fuera de rango (8–48 px)."
+  },
   "mic": {
     "label": "Mic",
     "settings": "Pulsar para hablar · Mic",
@@ -869,5 +880,46 @@
     "input_format": "El formato de esta entrada de micrófono no está disponible.",
     "unavailable": "El control de Mic no está disponible.",
     "input_required": "Mic necesita una pulsación y su liberación."
+  },
+  "tab_outputs": {
+    "title": "Salida de pestaña no disponible",
+    "body": "Estas pestañas no pueden sonar por la salida que eligieron. Mientras tanto sus efectos suenan por la salida principal, sin cortes.",
+    "missing": "no está conectada",
+    "too_many": "se alcanzó el máximo de 8 salidas distintas",
+    "use_main": "Usar la salida principal en todas",
+    "use_selected": "Asignar",
+    "keep": "Mantener (vuelve sola al reconectarla)",
+    "unavailable": "está ocupada por otro programa o no se pudo abrir"
+  },
+  "font_size": {
+    "button": "Tamaño de texto del botón:",
+    "tab": "Tamaño de texto predeterminado de los botones:",
+    "tab_hint": "Los botones con tamaño propio lo conservan; los demás usan este.",
+    "increase": "Aumentar tamaño de texto",
+    "decrease": "Reducir tamaño de texto",
+    "reset": "Volver al predeterminado",
+    "from_tab": "De la pestaña",
+    "from_global": "Global"
+  },
+  "colors": {
+    "fill": "Relleno:",
+    "solid": "Color sólido",
+    "horizontal": "Degradado horizontal",
+    "vertical": "Degradado vertical",
+    "diagonal": "Degradado diagonal ↘",
+    "diagonal_inv": "Degradado diagonal ↗",
+    "bg2": "Segundo color de fondo:",
+    "text_gradient": "Texto en degradado (segundo color):",
+    "exact": "Color exacto (no adaptar al tema)",
+    "preview": "Vista previa:",
+    "hex_hint": "Código HEX: #RRGGBB (también se puede pegar)",
+    "hex_invalid": "Hay un código de color no válido. Usa el formato #RRGGBB, por ejemplo #3498DB."
+  },
+  "search": {
+    "tooltip": "Buscar efectos en todas las pestañas",
+    "placeholder": "Buscar por nombre, archivo, pestaña o posición…",
+    "hint": "Ejemplos: «aplausos», «cortinas 5», «12».",
+    "no_results": "No se encontró ningún efecto.",
+    "location": "Pestaña {n}: {tab} · botón {index} (fila {row}, columna {col})"
   }
 }

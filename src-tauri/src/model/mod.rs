@@ -1,4 +1,5 @@
 pub mod audio;
+pub mod button_style;
 pub mod button_visual;
 pub mod config;
 pub mod console;
@@ -18,6 +19,7 @@ pub mod track;
 pub mod waveform_cache;
 
 pub use audio::AudioConfig;
+pub use button_style::ButtonStyle;
 pub use button_visual::ButtonVisual;
 pub use config::AppConfig;
 pub use content::{ButtonData, PaletaData, ProfileData};

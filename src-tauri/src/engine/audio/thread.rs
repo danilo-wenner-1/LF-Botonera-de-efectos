@@ -4,9 +4,10 @@ use crate::engine::audio::button::ButtonStateMap;
 use crate::engine::audio::command::AudioCommand;
 use crate::engine::audio::last_pressed::LastPressedInfo;
 use crate::engine::audio::ops as audio_ops;
+use crate::engine::audio::routing::resolve;
 use crate::engine::audio::thread_play::{play_file, play_sequence, PlayArgs};
 use crate::engine::cache::preload::PreloadCache;
-use crate::engine::console::{BusId, ConsoleEngine};
+use crate::engine::console::ConsoleEngine;
 use std::sync::mpsc::{Receiver, RecvTimeoutError};
 use std::sync::{Arc, Mutex};
 use std::thread;
@@ -75,6 +76,7 @@ fn handle(
             // consola, que es quien sabe si el bus sigue vivo.
             console.set_bus_routing_sync(bus, routing);
         }
+        AudioCommand::SetRoutings { routings } => console.set_routings_sync(routings),
         AudioCommand::Play {
             id,
             path,
@@ -98,7 +100,7 @@ fn handle(
             // comparte el conector, no el bus.
             play_file(
                 &states,
-                console.bus(bus).as_ref(),
+                resolve(console, bus),
                 &cache,
                 PlayArgs {
                     id,
@@ -131,10 +133,10 @@ fn handle(
             position_s,
         } => {
             // El salto solo alcanza a los botones de la botonera principal
-            // (`last_pressed`), asi que reconstruye en el bus de efectos.
+            // (`last_pressed`); se rehace en el bus por el que ya sonaba.
             playback_seek::seek_active(
                 &states,
-                console.bus(BusId::Efectos).as_ref(),
+                console,
                 &cache,
                 &last_pressed,
                 delta_s,
@@ -151,7 +153,7 @@ fn handle(
         } => {
             play_sequence(
                 &states,
-                console.bus(bus).as_ref(),
+                resolve(console, bus),
                 id,
                 paths,
                 volume,

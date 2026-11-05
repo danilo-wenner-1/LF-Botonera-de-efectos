@@ -31,6 +31,11 @@ pub fn validate_audio_file(path: &str) -> Result<(), String> {
     if !is_audio_path(file) {
         return Err("unsupported_audio_format".to_string());
     }
+    // M4A/MP4/AAC: se reproduce directo o se convierte en segundo plano; no se
+    // espera a la conversion para aceptar el archivo.
+    if super::transcode::probe::is_candidate(path) {
+        return super::transcode::prepare(path);
+    }
     if !audio_decode::can_decode(path) {
         return Err("unsupported_audio_format".to_string());
     }

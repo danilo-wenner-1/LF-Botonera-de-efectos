@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LF Botonera de Efectos</title>
+    <title>LF Botonera Radio</title>
     <link rel="icon" type="image/png" href="/icono_circular.png" />
     <script type="module" src="/js/ui/theme.js"></script>
     <link rel="stylesheet" href="/css/theme.css" />
@@ -38,6 +38,7 @@
     <link rel="stylesheet" href="/css/librarySearch.css" />
     <link rel="stylesheet" href="/css/libraryMetadata.css" />
     <link rel="stylesheet" href="/css/backupRestore.css" />
+    <link rel="stylesheet" href="/css/radio.css" />
   </head>
   <body>
 
@@ -51,6 +52,11 @@
 
       <!-- Barra de pestañas -->
       <div class="tabs-container">
+        <!-- Buscador global de efectos: siempre visible, a la izquierda. -->
+        <button id="btn-button-search" class="btn-settings btn-search"
+                data-i18n-title="search.tooltip" data-i18n-aria-label="search.tooltip">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg>
+        </button>
         <div id="tabs-list" class="tabs-scroll"></div>
         <button id="btn-add-tab" class="btn-add-tab" data-i18n-title="tabs.add_tooltip">+</button>
         <button id="btn-console" class="btn-settings" data-i18n-title="console.tooltip">🎛️</button>
@@ -274,6 +280,7 @@
     <div id="tab-context-menu" class="hidden context-style">
       <ul>
         <li id="tab-menu-editar"   data-i18n="tabs.context.edit">Editar Pestaña...</li>
+        <li id="tab-menu-shortcut" data-i18n="tabs.context.shortcut">Asignar atajo de teclado...</li>
         <li id="tab-menu-exportar" data-i18n="tabs.context.export">Exportar (.bdelf)</li>
         <li id="tab-menu-importar" data-i18n="tabs.context.import">Importar (.bdelf)</li>
         <hr>
@@ -328,13 +335,65 @@
           <div class="row">
             <div class="col">
               <label data-i18n="edit_modal.bg_color">Color de fondo:</label>
-              <input type="color" id="edit-bg-color" value="#444444">
+              <div class="color-hex-pair">
+                <input type="color" id="edit-bg-color" value="#444444">
+                <input type="text" id="edit-bg-hex" class="hex-input" maxlength="7" spellcheck="false" autocomplete="off" placeholder="#RRGGBB" data-i18n-title="colors.hex_hint">
+              </div>
             </div>
             <div class="col">
               <label data-i18n="edit_modal.text_color">Color de texto:</label>
-              <input type="color" id="edit-text-color" value="#FFFFFF">
+              <div class="color-hex-pair">
+                <input type="color" id="edit-text-color" value="#FFFFFF">
+                <input type="text" id="edit-text-hex" class="hex-input" maxlength="7" spellcheck="false" autocomplete="off" placeholder="#RRGGBB" data-i18n-title="colors.hex_hint">
+              </div>
             </div>
           </div>
+          <div class="row">
+            <div class="col">
+              <label for="edit-gradient" data-i18n="colors.fill">Relleno:</label>
+              <select id="edit-gradient">
+                <option value="" data-i18n="colors.solid">Color sólido</option>
+                <option value="horizontal" data-i18n="colors.horizontal">Degradado horizontal</option>
+                <option value="vertical" data-i18n="colors.vertical">Degradado vertical</option>
+                <option value="diagonal" data-i18n="colors.diagonal">Degradado diagonal ↘</option>
+                <option value="diagonal_inv" data-i18n="colors.diagonal_inv">Degradado diagonal ↗</option>
+              </select>
+            </div>
+            <div class="col" id="edit-bg2-col">
+              <label data-i18n="colors.bg2">Segundo color de fondo:</label>
+              <div class="color-hex-pair">
+                <input type="color" id="edit-bg2-color" class="native-color" value="#000000">
+                <input type="text" id="edit-bg2-hex" class="hex-input" maxlength="7" spellcheck="false" autocomplete="off" placeholder="#RRGGBB" data-i18n-title="colors.hex_hint">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <label class="checkbox-line"><input type="checkbox" id="edit-text-gradient">
+                <span data-i18n="colors.text_gradient">Texto en degradado</span></label>
+              <div class="color-hex-pair" id="edit-text2-pair">
+                <input type="color" id="edit-text2-color" class="native-color" value="#FFD700">
+                <input type="text" id="edit-text2-hex" class="hex-input" maxlength="7" spellcheck="false" autocomplete="off" placeholder="#RRGGBB" data-i18n-title="colors.hex_hint">
+              </div>
+            </div>
+            <div class="col">
+              <label class="checkbox-line"><input type="checkbox" id="edit-color-exact">
+                <span data-i18n="colors.exact">Color exacto (no adaptar al tema)</span></label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <label data-i18n="font_size.button">Tamaño de texto del botón:</label>
+              <div class="font-size-control">
+                <button type="button" id="edit-font-dec" class="btn-dark" data-i18n-title="font_size.decrease" data-i18n-aria-label="font_size.decrease">−</button>
+                <output id="edit-font-value" aria-live="polite"></output>
+                <button type="button" id="edit-font-inc" class="btn-dark" data-i18n-title="font_size.increase" data-i18n-aria-label="font_size.increase">+</button>
+                <button type="button" id="edit-font-reset" class="btn-dark" data-i18n-title="font_size.reset" data-i18n-aria-label="font_size.reset">↺</button>
+              </div>
+            </div>
+          </div>
+          <label data-i18n="colors.preview">Vista previa:</label>
+          <div id="edit-style-preview" class="edit-style-preview"><span class="label"><span class="button-visual-text"></span></span></div>
           <div class="row">
             <div class="col">
               <label data-i18n="edit_modal.shortcut">Tecla de Atajo:</label>
@@ -477,13 +536,20 @@
             </div>
           </div>
           <hr class="modal-divider">
-          <!-- Aquí iba un selector de "Salida de Audio (Esta pestaña)". Se retiró
-               porque no ruteaba nada y nunca lo hizo: `PaletaData.audio_out` solo
-               se guarda y se exporta a `.bdelf` por compatibilidad con el LF
-               Automatizador, y el motor de la Botonera lo ignora. Ofrecerlo hacía
-               creer que se configuraba algo. El campo sigue en el modelo, así que
-               lo que venga del LFA se conserva intacto.
-               Los colores de la pestaña los inserta aquí `_ensureColorControls`. -->
+          <!-- Salida de audio propia de la pestaña: ahora SÍ rutea. Rust asigna a
+               cada tarjeta un carril de la consola (cmd_tab_outputs.rs). Vacío =
+               la salida principal. -->
+          <label for="tab-audio-out" data-i18n="tab_modal.audio_out">Salida de audio de esta pestaña:</label>
+          <select id="tab-audio-out" class="audio-select" style="margin-bottom:10px"></select>
+          <label data-i18n="font_size.tab">Tamaño de texto predeterminado de los botones:</label>
+          <div class="font-size-control">
+                <button type="button" id="tab-font-dec" class="btn-dark" data-i18n-title="font_size.decrease" data-i18n-aria-label="font_size.decrease">−</button>
+                <output id="tab-font-value" aria-live="polite"></output>
+                <button type="button" id="tab-font-inc" class="btn-dark" data-i18n-title="font_size.increase" data-i18n-aria-label="font_size.increase">+</button>
+                <button type="button" id="tab-font-reset" class="btn-dark" data-i18n-title="font_size.reset" data-i18n-aria-label="font_size.reset">↺</button>
+              </div>
+          <p class="hint" data-i18n="font_size.tab_hint">Los botones con tamaño propio lo conservan.</p>
+          <!-- Los colores de la pestaña los inserta aquí `_ensureColorControls`. -->
         </div>
         <div class="modal-footer">
           <button id="btn-save-tab" class="btn-blue" data-i18n="tab_modal.save">Guardar</button>
@@ -581,6 +647,10 @@
                 <div class="checkbox-line">
                   <input type="checkbox" id="config-show-fixed-panel">
                   <label for="config-show-fixed-panel" data-i18n="settings.show_fixed_panel">Mostrar el Panel fijo</label>
+                </div>
+                <div class="checkbox-line">
+                  <input type="checkbox" id="config-show-bottom-bar">
+                  <label for="config-show-bottom-bar" data-i18n="settings.show_bottom_bar">Mostrar la barra inferior (reloj, modos, Mic, volumen, Detener todo)</label>
                 </div>
               </div>
             </div>
@@ -754,7 +824,8 @@
             </div>
           </div>
           <div id="s-about" class="s-panel hidden about-panel">
-            <h2>LF Botonera de Efectos</h2>
+            <h2>LF Botonera Radio</h2>
+            <p class="hint">Versión modificada de LF Botonera de Efectos (no oficial).</p>
             <p><span data-i18n="settings.about_version_label">Versión</span> <strong id="app-version-number">—</strong></p>
             <p><span data-i18n="settings.about_channel_label">Canal de distribución:</span> <strong id="app-distribution-channel">—</strong></p>
             <p><span data-i18n="settings.about_platform_label">Sistema:</span> <strong id="app-platform">—</strong></p>

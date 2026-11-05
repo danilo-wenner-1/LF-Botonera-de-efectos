@@ -1,5 +1,6 @@
 import { invoke } from '../bridge/api.js';
-import { paintAdaptive } from '../util/colorAdapter.js';
+import { paintButtonStyle } from './buttonStyle.js';
+import { reportPlayError } from './notice.js';
 import { t } from '../util/i18n.js';
 import { paintButtonContent } from './buttonVisual.js';
 import { openEditModal } from './editModal.js';
@@ -78,14 +79,14 @@ export async function toggleFixedPanel() {
 function _item(btn) {
     const el = document.createElement('button');
     el.className = 'fixed-panel-item'; el.dataset.id = btn.id; el.dataset.index = btn.index;
-    paintAdaptive(el, btn.color_bg, btn.color_text, 'button');
     el.innerHTML = `<span class="fixed-panel-name"></span>
         <span class="timer fixed-panel-time">${btn.duration_str || ''}</span>
         <span class="progress-container"><span class="progress-bar"></span></span>`;
     paintButtonContent(el.querySelector('.fixed-panel-name'), btn);
+    paintButtonStyle(el, btn, 0);
     el.addEventListener('click', e => {
         if (e.altKey) return; // Alt+clic = reordenar/mover (gridDnd.js)
-        invoke('play_button', { id: btn.id }).catch(console.error);
+        invoke('play_button', { id: btn.id }).catch(reportPlayError);
     });
     el.addEventListener('contextmenu', e => {
         e.preventDefault();

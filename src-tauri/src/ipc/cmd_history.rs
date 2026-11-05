@@ -44,6 +44,7 @@ fn restore(
     config::save_config(&cfg)?;
     let out = cfg.clone();
     drop(cfg);
+    crate::ipc::cmd_tab_outputs::apply(&state);
     global_shortcuts::sync(&app)?;
     Ok(out)
 }

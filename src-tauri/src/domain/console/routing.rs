@@ -18,7 +18,15 @@ pub enum BusId {
     /// El programa (PGM): la suma de los buses que van al aire. Su fader es el
     /// volumen master y su medidor es el vumetro de la barra inferior.
     Programa,
+    /// Una salida propia de pestaña: los botones de las pestañas que eligieron
+    /// la misma tarjeta suenan por el mismo carril. No suma en el programa ni
+    /// obedece al master (como cualquier bus con tarjeta propia). Un carril sin
+    /// tarjeta asignada (`Device("")`) no se abre.
+    Salida(u8),
 }
+
+/// Cuantas tarjetas distintas pueden tener las pestañas a la vez.
+pub const MAX_SALIDAS: u8 = 8;
 
 /// A donde entrega un bus su señal.
 #[derive(Clone, PartialEq, Eq, Debug)]
@@ -60,8 +68,25 @@ impl BusId {
             // La pre-escucha comparte tarjeta con el programa mientras no tenga
             // una propia, pero JAMAS se suma a el.
             BusId::Cue => Routing::ProgramDevice,
+            // Un carril nace sin tarjeta: no existe hasta que una pestaña lo pide.
+            BusId::Salida(_) => Routing::Device(String::new()),
             _ => Routing::Program,
         }
+    }
+
+    /// Los carriles de salida por pestaña, en orden estable.
+    pub fn salidas() -> impl Iterator<Item = BusId> {
+        (0..MAX_SALIDAS).map(BusId::Salida)
+    }
+
+    /// Todos los buses con slot: los fijos y los carriles.
+    pub fn every() -> impl Iterator<Item = BusId> {
+        Self::ALL.into_iter().chain(Self::salidas())
+    }
+
+    /// Si este bus, con este ruteo, debe existir. Un carril sin tarjeta no.
+    pub fn wants_output(self, routing: &Routing) -> bool {
+        !matches!((self, routing), (BusId::Salida(_), Routing::Device(name)) if name.is_empty())
     }
 
     /// Si este bus puede sumar en el programa.

@@ -6,7 +6,7 @@ use crate::engine::audio::button::{ButtonStateMap, PlaybackGroup, ReplayInfo};
 use crate::engine::audio::ops::{self as audio_ops, stop_removed};
 use crate::engine::audio::sequence::SequenceSource;
 use crate::engine::cache::preload::PreloadCache;
-use crate::engine::console::Bus;
+use crate::engine::console::{Bus, BusId};
 use std::sync::{Arc, Mutex};
 
 pub struct PlayArgs {
@@ -30,11 +30,11 @@ pub struct PlayArgs {
 
 pub fn play_file(
     states: &Arc<Mutex<ButtonStateMap>>,
-    bus: Option<&Bus>,
+    bus: Option<(BusId, Bus)>,
     cache: &Arc<Mutex<PreloadCache>>,
     args: PlayArgs,
 ) -> bool {
-    let Some(bus) = bus else { return false };
+    let Some((bus_id, bus)) = bus else { return false };
     let mut states = states.lock().unwrap();
     if args.stop_other {
         if args.fade_out_stop_s > 0.0 {
@@ -73,9 +73,10 @@ pub fn play_file(
         fade_out_end_s: args.fade_out_end_s,
     });
     let btn_state = attach_button(
-        bus,
+        &bus,
         source,
         AttachArgs {
+            bus: bus_id,
             volume: args.volume,
             duration: args.duration,
             loop_mode: args.loop_mode,
@@ -94,21 +95,22 @@ pub fn play_file(
 
 pub fn play_sequence(
     states: &Arc<Mutex<ButtonStateMap>>,
-    bus: Option<&Bus>,
+    bus: Option<(BusId, Bus)>,
     id: String,
     paths: Vec<String>,
     volume: f32,
     duration: f64,
     group: PlaybackGroup,
 ) {
-    let Some(bus) = bus else { return };
+    let Some((bus_id, bus)) = bus else { return };
     let mut states = states.lock().unwrap();
     stop_removed(states.remove(&id));
     if let Some(seq) = SequenceSource::from_paths(&paths) {
         let btn_state = attach_button(
-            bus,
+            &bus,
             Box::new(seq),
             AttachArgs {
+                bus: bus_id,
                 volume,
                 duration,
                 loop_mode: false,

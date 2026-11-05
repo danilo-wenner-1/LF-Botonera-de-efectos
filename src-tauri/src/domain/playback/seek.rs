@@ -6,7 +6,8 @@ use crate::engine::audio::last_pressed::LastPressedInfo;
 /// Proposito: estado de reconstruccion y seek para botones principales.
 use crate::engine::audio::ops as audio_ops;
 use crate::engine::cache::preload::PreloadCache;
-use crate::engine::console::Bus;
+use crate::engine::audio::routing::resolve;
+use crate::engine::console::{BusId, ConsoleEngine};
 use std::sync::{Arc, Mutex};
 
 pub use crate::engine::audio::button::ReplayInfo;
@@ -18,21 +19,21 @@ pub use crate::engine::audio::button::ReplayInfo;
 /// se contradijeran.
 pub fn seek_active(
     states: &Arc<Mutex<ButtonStateMap>>,
-    bus: Option<&Bus>,
+    console: &ConsoleEngine,
     cache: &Arc<Mutex<PreloadCache>>,
     last_pressed: &Mutex<Option<LastPressedInfo>>,
     delta_s: Option<f64>,
     position_s: Option<f64>,
 ) {
-    let Some(bus) = bus else {
-        return;
-    };
     let Some(id) = last_pressed.lock().unwrap().as_ref().map(|i| i.id.clone()) else {
         return;
     };
     // Ficha y posicion de una vez, soltando el candado antes de decodificar: es
     // lento y el resto del motor no debe esperar a que acabe.
-    let Some((info, current)) = current_state(states, &id) else {
+    let Some((info, current, wanted)) = current_state(states, &id) else {
+        return;
+    };
+    let Some((bus_id, bus)) = resolve(console, wanted) else {
         return;
     };
     let Some(target) = target_position(current, info.duration, info.loop_mode, delta_s, position_s)
@@ -51,9 +52,10 @@ pub fn seek_active(
     };
     audio_ops::stop_id(states, &id);
     let state = attach_button(
-        bus,
+        &bus,
         source,
         AttachArgs {
+            bus: bus_id,
             volume: info.volume,
             duration: info.duration,
             loop_mode: info.loop_mode,
@@ -71,10 +73,13 @@ pub fn seek_active(
 
 /// La ficha y la posicion de la instancia que suena de ese boton. La ULTIMA, que
 /// con `overlap` no es la unica.
-fn current_state(states: &Arc<Mutex<ButtonStateMap>>, id: &str) -> Option<(Arc<ReplayInfo>, f64)> {
+fn current_state(
+    states: &Arc<Mutex<ButtonStateMap>>,
+    id: &str,
+) -> Option<(Arc<ReplayInfo>, f64, BusId)> {
     let map = states.lock().unwrap();
     let state = map.get(id)?.iter().rev().find(|s| !s.is_done())?;
-    Some((state.replay.clone()?, state.position()))
+    Some((state.replay.clone()?, state.position(), state.bus))
 }
 
 fn target_position(

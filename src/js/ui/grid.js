@@ -9,12 +9,19 @@ import { invoke } from '../bridge/api.js';
 import { showContextMenu } from './contextMenu.js';
 import { setPlaybackButtons } from './gridPlayback.js';
 import { isMapping, captureButton } from './mapping.js';
-import { paintAdaptive } from '../util/colorAdapter.js';
+import { paintButtonStyle, fitLabels, watchFit } from './buttonStyle.js';
+import { reportPlayError } from './notice.js';
 import { t } from '../util/i18n.js';
 import { paintButtonContent } from './buttonVisual.js';
 import { display as midiDisplay } from './midiControls.js';
 
 let _onRefresh = null;
+let _tabFont = 0;
+
+/** Tamaño de texto predeterminado de la pestaña visible (0 = el global). */
+export function currentTabFont() {
+    return _tabFont;
+}
 
 /** Guarda el callback global de refresco que usan las celdas. */
 export function initGrid(onRefresh) {
@@ -33,6 +40,7 @@ export function drawGrid(gridState, onRefresh) {
     if (!gridEl) return;
 
     setPlaybackButtons(gridState.buttons);
+    _tabFont = gridState.font_size || 0;
 
     gridEl.innerHTML = '';
     gridEl.style.gridTemplateColumns = `repeat(${gridState.columns}, 1fr)`;
@@ -42,18 +50,20 @@ export function drawGrid(gridState, onRefresh) {
     for (let i = 0; i < total; i++) {
         const index   = i + 1;
         const btnData = gridState.buttons.find(b => b.index === index) ?? null;
-        gridEl.appendChild(_makeCell(index, btnData));
+        gridEl.appendChild(_makeCell(index, btnData, gridState.font_size || 0));
     }
+    // El texto que no cabe se encoge en pantalla (el tamaño guardado no cambia).
+    requestAnimationFrame(() => fitLabels(gridEl));
+    watchFit(gridEl);
 }
 
-function _makeCell(index, btnData) {
+function _makeCell(index, btnData, tabFont = 0) {
     const btn = document.createElement('div');
     btn.className     = 'grid-item';
     btn.dataset.index = index;
 
     if (btnData) {
         btn.dataset.id            = btnData.id;
-        paintAdaptive(btn, btnData.color_bg, btnData.color_text, 'button');
         const shortcutHtml = btnData.shortcut
             ? `<span class="shortcut-badge">${_escapeHtml(btnData.shortcut)}</span>`
             : '';
@@ -72,11 +82,12 @@ function _makeCell(index, btnData) {
               <div class="progress-bar"></div>
             </div>`;
         paintButtonContent(btn.querySelector('.label'), btnData);
+        paintButtonStyle(btn, btnData, tabFont);
 
         btn.addEventListener('click', e => {
             if (e.altKey) return; // Alt+clic = reordenar (gridDnd.js)
             if (isMapping()) { captureButton(btnData); return; }
-            invoke('play_button', { id: btnData.id }).catch(console.error);
+            invoke('play_button', { id: btnData.id }).catch(reportPlayError);
         });
     } else {
         btn.innerHTML = `<span class="index">${index}</span>`;

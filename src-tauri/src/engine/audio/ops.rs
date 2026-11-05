@@ -157,6 +157,7 @@ mod tests {
     fn state(group: PlaybackGroup) -> ButtonState {
         ButtonState {
             group,
+            bus: crate::engine::console::BusId::Efectos,
             done_flag: Arc::new(AtomicBool::new(false)),
             stop_flag: Arc::new(AtomicBool::new(false)),
             fade_out_flag: None,

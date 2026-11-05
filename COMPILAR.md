@@ -46,6 +46,21 @@ En la raíz del repositorio, una sola vez:
 npm install
 ```
 
+### FFmpeg (solo Windows)
+
+La app incluye FFmpeg para convertir los M4A/AAC que no se pueden reproducir
+directo (HE-AAC). El binario (~100 MB) **no está en el repositorio** porque
+supera el límite de GitHub; se descarga una vez, con verificación SHA-256:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\fetch-ffmpeg.ps1
+```
+
+Queda en `src-tauri/binaries/ffmpeg-x86_64-pc-windows-msvc.exe` y
+`tauri.windows.conf.json` lo empaqueta junto al ejecutable. Sin ese archivo,
+`npm run tauri build` en Windows falla. En Linux no hace falta: se usa el
+`ffmpeg` del sistema si está instalado (`sudo apt-get install ffmpeg`).
+
 ---
 
 ## Compilar (producción)

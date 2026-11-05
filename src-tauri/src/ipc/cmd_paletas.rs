@@ -44,8 +44,10 @@ pub fn create_paleta(
     tab_bg: Option<String>,
     tab_text: Option<String>,
     audio_out: Option<String>,
+    font_size: Option<u32>,
     state: tauri::State<AppState>,
 ) -> Result<AppConfig, String> {
+    crate::model::button_style::validate_font_size(font_size.unwrap_or(0))?;
     let mut cfg = state.config.lock().unwrap();
     let profile = cfg
         .profiles
@@ -64,11 +66,15 @@ pub fn create_paleta(
         midi: Default::default(),
         tab_bg: tab_bg.unwrap_or_default(),
         tab_text: tab_text.unwrap_or_default(),
+        font_size: font_size.unwrap_or(0),
         botones: Vec::new(),
     });
     profile.active_paleta_id = id;
     config::save_config(&cfg)?;
-    Ok(cfg.clone())
+    let next = cfg.clone();
+    drop(cfg);
+    crate::ipc::cmd_tab_outputs::apply(&state);
+    Ok(next)
 }
 
 #[tauri::command]
@@ -100,7 +106,10 @@ pub fn delete_paleta(
         profile.active_paleta_id = profile.paletas[0].id.clone();
     }
     config::save_config(&cfg)?;
-    Ok(cfg.clone())
+    let next = cfg.clone();
+    drop(cfg);
+    crate::ipc::cmd_tab_outputs::apply(&state);
+    Ok(next)
 }
 
 #[tauri::command]
@@ -117,9 +126,13 @@ pub fn update_paleta_meta(
     shortcut: Option<String>,
     midi: Option<MidiBinding>,
     replace_shortcut: Option<bool>,
+    font_size: Option<u32>,
     app: tauri::AppHandle,
     state: tauri::State<AppState>,
 ) -> Result<AppConfig, String> {
+    if let Some(size) = font_size {
+        crate::model::button_style::validate_font_size(size)?;
+    }
     let mut cfg = state.config.lock().unwrap();
     let mut id_mappings = Vec::new();
     let mut grid_changed = false;
@@ -183,11 +196,17 @@ pub fn update_paleta_meta(
     if let Some(value) = midi {
         paleta.midi = value;
     }
+    // Cambiar el predeterminado de la pestaña NO toca los botones: los que
+    // tienen tamaño propio lo conservan y los demas lo heredan al pintarse.
+    if let Some(size) = font_size {
+        paleta.font_size = size;
+    }
     config::save_config(&cfg)?;
     drop(cfg);
     if grid_changed {
         grid_reorder::remap_active_audio_ids(&state, &id_mappings);
     }
+    crate::ipc::cmd_tab_outputs::apply(&state);
     global_shortcuts::sync(&app)?;
     let cfg = state.config.lock().unwrap();
     Ok(cfg.clone())

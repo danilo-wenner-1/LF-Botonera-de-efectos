@@ -42,6 +42,13 @@ pub enum ConsoleCommand {
         /// fuentes necesita esperar: entregarlas al bus viejo seria tirarlas.
         done: Option<SyncSender<()>>,
     },
+    /// Varios ruteos de una vez, con UNA sola reconstruccion del grafo (los
+    /// carriles de las pestañas cambian juntos; rehacer uno a uno cortaria lo
+    /// que suena tantas veces como carriles).
+    SetRoutings {
+        routings: Vec<(BusId, Routing)>,
+        done: Option<SyncSender<()>>,
+    },
 }
 
 /// Lo que un bus conserva aunque su tarjeta no exista. Los atomicos se crean una
@@ -92,9 +99,8 @@ pub struct ConsoleEngine {
 impl ConsoleEngine {
     pub fn new() -> Self {
         let (tx, rx) = channel::<ConsoleCommand>();
-        let slots = BusId::ALL
-            .iter()
-            .map(|bus| (*bus, BusSlot::new(bus.default_routing())))
+        let slots = BusId::every()
+            .map(|bus| (bus, BusSlot::new(bus.default_routing())))
             .collect();
         let state = Arc::new(Mutex::new(ConsoleState {
             slots,
@@ -130,6 +136,25 @@ impl ConsoleEngine {
         if sent.is_ok() {
             // Con tope: si la consola se atasca abriendo una tarjeta que no
             // responde, mas vale seguir sin restaurar que colgar el motor.
+            let _ = wait.recv_timeout(std::time::Duration::from_secs(2));
+        }
+    }
+
+    /// Aplica varios ruteos con una sola reconstruccion, y espera a que acabe.
+    pub fn set_routings_sync(&self, routings: Vec<(BusId, Routing)>) {
+        let routings = routings
+            .into_iter()
+            .map(|(bus, routing)| (bus, sanitize(bus, routing)))
+            .collect();
+        let (done, wait) = sync_channel(0);
+        if self
+            .tx
+            .send(ConsoleCommand::SetRoutings {
+                routings,
+                done: Some(done),
+            })
+            .is_ok()
+        {
             let _ = wait.recv_timeout(std::time::Duration::from_secs(2));
         }
     }

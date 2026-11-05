@@ -7,6 +7,7 @@ pub fn paleta_to_grid(paleta: &PaletaData) -> GridState {
     GridState {
         columns: paleta.cols,
         rows: paleta.rows,
+        font_size: paleta.font_size,
         buttons: paleta.botones.iter().map(button_to_view).collect(),
     }
 }

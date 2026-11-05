@@ -58,6 +58,7 @@ pub fn set_toolbar_button(
     match button.as_str() {
         "console" => cfg.show_console_button = visible,
         "fixed_panel" => cfg.show_fixed_panel_button = visible,
+        "bottom_bar" => cfg.show_bottom_bar = visible,
         _ => return Err("unknown_toolbar_button".to_string()),
     }
     config::save_config(&cfg)

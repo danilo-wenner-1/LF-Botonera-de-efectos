@@ -48,6 +48,11 @@ pub struct AppConfig {
     pub show_console_button: bool,
     #[serde(default = "default_true")]
     pub show_fixed_panel_button: bool,
+    /// La barra inferior (reloj, vumetro, modos, Mic, volumen, Detener todo).
+    /// Nace visible y ausente = visible: un archivo antiguo no la pierde.
+    /// Oculta, la rejilla ocupa su sitio; Detener todo sigue en su atajo.
+    #[serde(default = "default_true")]
+    pub show_bottom_bar: bool,
     #[serde(default)]
     pub active_profile_id: String,
     #[serde(default = "default_true")]
@@ -123,6 +128,7 @@ impl Default for AppConfig {
             midi: Default::default(),
             tab_bg: String::new(),
             tab_text: String::new(),
+            font_size: 0,
             botones: Vec::new(),
         };
         let profile = ProfileData {
@@ -146,6 +152,7 @@ impl Default for AppConfig {
             console_mode: default_console_mode(),
             show_console_button: true,
             show_fixed_panel_button: true,
+            show_bottom_bar: true,
             active_profile_id: "perfil_1".to_string(),
             clock_24h: true,
             last_update_check: 0,

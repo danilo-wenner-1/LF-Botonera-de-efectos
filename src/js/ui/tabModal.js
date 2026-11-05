@@ -8,6 +8,10 @@ import { invoke } from '../bridge/api.js';
 import { t } from '../util/i18n.js';
 import { attachPalette, refreshColorInputs } from './colorPalette.js';
 import { appAlert } from './appDialog.js';
+import { bindFontControl, globalFontPx } from './fontSizeControl.js';
+import { checkTabOutputs } from './tabOutputs.js';
+
+let _font = null;
 
 /**
  * Abre el modal de pestaña.
@@ -29,6 +33,10 @@ export async function openTabModal(config, paleta, onRefresh) {
     const bgEl    = document.getElementById('tab-bg-color');
     const textEl  = document.getElementById('tab-text-color');
     await attachPalette(bgEl, textEl, 'tab');
+    const outEl = document.getElementById('tab-audio-out');
+    await _fillOutputs(outEl, paleta?.audio_out || '');
+    _font ??= bindFontControl('tab', globalFontPx, 'font_size.from_global');
+    _font.set(paleta?.font_size || 0);
 
     if (isEdit) {
         nameEl.value  = paleta.nombre;
@@ -60,6 +68,8 @@ export async function openTabModal(config, paleta, onRefresh) {
             cols:      parseInt(colsEl.value) || 5,
             tabBg:     bgEl.value,
             tabText:   textEl.value,
+            audioOut:  outEl.value,
+            fontSize:  _font.get(),
         };
         try {
             if (isEdit) {
@@ -69,6 +79,8 @@ export async function openTabModal(config, paleta, onRefresh) {
             }
             modal.classList.add('hidden');
             onRefresh?.();
+            // Rust ya aplicó el ruteo; si la tarjeta elegida no está, se avisa.
+            checkTabOutputs();
         } catch (e) {
             const key = `errors.${e}`;
             const msg = t(key);
@@ -97,6 +109,25 @@ function _ensureColorControls() {
           <input type="color" id="tab-text-color" value="#ffffff">
         </div>`;
     body.appendChild(row);
+}
+
+/** Salida principal + tarjetas visibles. Una tarjeta guardada que ya no está se
+ *  conserva en la lista (marcada) para no perder la elección sin querer. */
+async function _fillOutputs(select, current) {
+    const devices = await invoke('get_audio_devices').catch(() => ['default']);
+    select.innerHTML = '';
+    const add = (value, label) => {
+        const opt = document.createElement('option');
+        opt.value = value;
+        opt.textContent = label;
+        select.appendChild(opt);
+    };
+    add('', t('tab_modal.audio_out_main'));
+    devices.forEach(d => add(d, d === 'default' ? t('tab_modal.audio_out_default') : d));
+    if (current && !devices.includes(current)) {
+        add(current, `${current} — ${t('tab_outputs.missing')}`);
+    }
+    select.value = current;
 }
 
 function _tabCount(config) {

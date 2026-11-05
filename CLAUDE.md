@@ -76,6 +76,7 @@ AppConfig {
   console_mode: String,          // "window" | "modal" — cómo abre la consola (nace en ventana)
   show_console_button: bool,     // botones de la barra superior que se pueden esconder;
   show_fixed_panel_button: bool, // nacen visibles y ausente = visible (compat)
+  show_bottom_bar: bool,         // barra inferior entera; ausente = visible
   active_profile_id: String,
   clock_24h: bool,
   last_update_check: i64,        // epoch de la última comprobación de actualizaciones
@@ -136,10 +137,11 @@ PaletaData {
   nombre: String,
   rows: u32,                   // default 5
   cols: u32,                   // default 5
-  audio_out: String,           // "" = usa out_main del perfil
+  audio_out: String,           // "" = usa out_main del perfil; un nombre = carril propio (SÍ rutea)
   shortcut: String,
   tab_bg: String,
   tab_text: String,
+  font_size: u32,              // px predeterminado de sus botones; 0 = global (se omite del JSON)
   botones: Vec<ButtonData>,
 }
 ```
@@ -166,6 +168,7 @@ ButtonData {
   restart: bool,
   shortcut: String,
   visual: ButtonVisual, // default: auto + visual_text; se omite del JSON si no cambia
+  style: ButtonStyle,   // font_size (0 = de la pestaña), gradient, bg2, text2, exact; se omite si no cambia
 }
 ```
 
@@ -461,6 +464,32 @@ es la regla: una escucha privada que se cuela en el aire no es una escucha priva
 
 ---
 
+### Salida propia por pestaña (carriles `BusId::Salida(n)`)
+
+Hasta `MAX_SALIDAS` (8) carriles con `Routing::Device`. `domain/console/tab_lanes.rs`
+reparte: pestaña sin salida o con la principal → `Efectos`; misma tarjeta → mismo
+carril; asignación ESTABLE (no se mueve a nadie); tarjeta ausente → sin carril e
+`OutputIssue`. `ipc/cmd_tab_outputs.rs::apply` lo recalcula al arrancar y tras
+cualquier cambio de salida, perfil, pestañas, importación o deshacer, y lo instala
+con UNA sola reconstrucción (`ConsoleCommand::SetRoutings`). `ButtonState.bus`
+recuerda el bus de cada fuente: reengancharla o saltar va a SU bus, y si es un
+carril muerto `routing::resolve` cae a `Efectos` (un efecto por el sitio
+equivocado se corrige; uno mudo no). Los carriles no suman en programa, no
+obedecen al máster, no los atenúa el Mic y no aparecen en la consola ni el vúmetro.
+La UI consulta `get_tab_output_status` (async) cada 4 s solo si alguna pestaña
+tiene salida propia: así se detecta una desconexión en caliente.
+
+### M4A / MP4 / AAC (`engine/audio/transcode/`)
+
+`decode::source_from_path(_at)` pasa la ruta por `transcode::resolve`. AAC-LC
+(≥ 32 kHz, sin extensión SBR) y ALAC suenan directo; HE-AAC (explícito o
+implícito: núcleo < 32 kHz suena opaco) y lo que symphonia no abre se convierte
+UNA vez a MP3 320k con el FFmpeg incluido (`binaries/`, externalBin solo en
+Windows) en un único hilo con cola, nunca en el hilo de audio. Copia en
+`%APPDATA%/LF Botonera/converted/{fnv(ruta)}-{fnv(mtime:size)}.mp3`. Mientras
+se convierte, `play_button` devuelve `audio_converting`; si falla, emite
+`audio-convert-status`. La configuración y `tracks.db` siguen con la ruta original.
+
 ## 7. Hilos en segundo plano
 
 | Hilo | Módulo | Descripción |
@@ -545,7 +574,13 @@ global; el atajo pertenece al perfil. Captura/detección en `engine/mic/`, regla
 - `set_console_mode(mode)` — "window" | "modal"; se persiste
 
 ### Grid / botones
-- `get_grid_state` → grid de la paleta activa
+- `search_buttons(query)` → `ButtonHit[]` de TODAS las pestañas del perfil (texto o pestaña+posición)
+- `get_tab_output_status` (async) → `{devices, issues[]}`; reaplica los carriles
+- `set_tab_output(profile_id, paleta_id, device)` — "" = salida principal
+- `update_button_data(..., style?)` / `update_fixed_button(..., style?)` — Rust valida `ButtonStyle`
+- `update_paleta_meta(..., audio_out?, font_size?)` / `create_paleta(..., font_size?)`
+- `set_toolbar_button("bottom_bar", visible)`
+- `get_grid_state` → grid de la paleta activa (incluye `font_size` de la pestaña)
 - `suggest_button_style(path)` → colores sugeridos basados en el archivo
 - `get_color_palette` → paleta de 24 colores (`SAFE_COLORS`, `domain/palette.rs`)
 - `set_buttons_color(indexes, colorBg, group)` — pinta de una vez los seleccionados con Ctrl+clic. `group` = "grid" (paleta activa) o "fixed" (panel). El color del TEXTO no se pide: lo calcula Rust (regla 8)
