@@ -8,7 +8,7 @@
 ## 📥 Cómo instalarla (Windows 10/11)
 
 1. Entra en **[Releases](https://github.com/danilo-wenner-1/LF-Botonera-de-efectos/releases/latest)**
-   y descarga el archivo **`LF Botonera Radio_1.5.1_x64-setup.exe`**.
+   y descarga el archivo **`LF.Botonera.Radio_1.5.1_x64-setup.exe`**.
 2. Ábrelo con doble clic.
 3. Windows probablemente mostrará **«Windows protegió su PC»** (SmartScreen). Es normal:
    el instalador no tiene firma digital paga. Pulsa **Más información → Ejecutar de todas formas**.
