@@ -33,6 +33,8 @@ macro_rules! lf_invoke_handlers {
             ipc::cmd_audio::stop_all_audio,
             ipc::cmd_button_playback::play_button,
             ipc::cmd_button_search::search_buttons,
+            ipc::cmd_relocate::relocate_missing_files,
+            ipc::cmd_config::set_button_display,
             ipc::cmd_grid::get_grid_state,
             ipc::cmd_grid::suggest_button_style,
             ipc::cmd_grid::get_color_palette,

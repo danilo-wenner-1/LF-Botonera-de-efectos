@@ -14,6 +14,7 @@ import { initKeyInputs } from '../util/keyInputs.js';
 import { appAlert } from './appDialog.js';
 import { initFixedPanelSettings, loadFixedPanelSettings, saveFixedPanelSettings } from './settingsFixedPanel.js';
 import { loadToolbarButtons, saveToolbarButtons } from './toolbarButtons.js';
+import { loadDisplayOptions, saveDisplayOptions } from './displayOptions.js';
 import { loadAboutInfo } from './aboutInfo.js';
 import { initSettingsMidi, loadSettingsMidi, saveSettingsMidi } from './settingsMidi.js';
 
@@ -82,6 +83,7 @@ async function _openSettings() {
     document.getElementById('config-language').value = config.language || 'es';
     document.getElementById('config-button-text-size').value = config.button_text_size || 'normal';
     loadToolbarButtons(config);
+    loadDisplayOptions(config);
     _currentLanguage = config.language || 'es';
 
     loadLocutionsPanel(config);
@@ -112,6 +114,7 @@ async function _saveSettings() {
             size: document.getElementById('config-button-text-size').value,
         });
         await saveToolbarButtons();
+        await saveDisplayOptions();
 
         // Idioma: persistir y recargar la UI solo si cambió
         const lang = document.getElementById('config-language').value;

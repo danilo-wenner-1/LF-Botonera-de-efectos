@@ -53,6 +53,12 @@ pub struct AppConfig {
     /// Oculta, la rejilla ocupa su sitio; Detener todo sigue en su atajo.
     #[serde(default = "default_true")]
     pub show_bottom_bar: bool,
+    /// Numero de posicion en la esquina de cada boton. Nace visible.
+    #[serde(default = "default_true")]
+    pub show_button_index: bool,
+    /// Tamaño en px del texto de duracion bajo el nombre del efecto.
+    #[serde(default = "default_duration_px")]
+    pub duration_font_px: u32,
     #[serde(default)]
     pub active_profile_id: String,
     #[serde(default = "default_true")]
@@ -92,6 +98,11 @@ pub struct AppConfig {
     pub console: ConsoleConfig,
     #[serde(default)]
     pub profiles: Vec<ProfileData>,
+}
+/// El de siempre (13 px): un archivo antiguo se ve exactamente igual.
+pub const DEFAULT_DURATION_PX: u32 = 13;
+fn default_duration_px() -> u32 {
+    DEFAULT_DURATION_PX
 }
 fn default_true() -> bool {
     true
@@ -153,6 +164,8 @@ impl Default for AppConfig {
             show_console_button: true,
             show_fixed_panel_button: true,
             show_bottom_bar: true,
+            show_button_index: true,
+            duration_font_px: DEFAULT_DURATION_PX,
             active_profile_id: "perfil_1".to_string(),
             clock_24h: true,
             last_update_check: 0,

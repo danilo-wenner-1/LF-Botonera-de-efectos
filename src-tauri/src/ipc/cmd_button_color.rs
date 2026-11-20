@@ -9,7 +9,7 @@
 //! resultado se ve al momento, sin configurar nada por adelantado.
 use super::cmd_fixed_panel::buttons_mut;
 use super::AppState;
-use crate::domain::colors::text_for_theme;
+use crate::domain::colors::readable_text;
 use crate::engine::persist::config_io;
 use crate::model::{AppConfig, ButtonData};
 
@@ -29,7 +29,9 @@ pub fn set_buttons_color(
         return Err("no_buttons_selected".into());
     }
     let mut cfg = state.config.lock().unwrap();
-    let color_text = text_for_theme(&color_bg, &cfg.theme.clone(), "button");
+    // El color elegido se pinta TAL CUAL (sin adaptarlo al tema), asi que el texto
+    // se calcula sobre ese mismo color, no sobre su version adaptada.
+    let color_text = readable_text(&color_bg);
     let painted = paint(&mut cfg, &indexes, &color_bg, &color_text, &group)?;
     if painted == 0 {
         return Err("button_not_found".into());
@@ -67,9 +69,8 @@ fn paint(
     for btn in buttons.iter_mut().filter(|b| indexes.contains(&b.index)) {
         btn.color_bg = color_bg.to_string();
         btn.color_text = color_text.to_string();
-        // Un color de la paleta es un color adaptado al tema: deja de ser
-        // "exacto" salvo que el boton lleve degradado (que siempre lo es).
-        btn.style.exact = false;
+        // Un color elegido a mano es exacto: se ve como se escribio.
+        btn.style.exact = true;
         painted += 1;
     }
     Ok(painted)

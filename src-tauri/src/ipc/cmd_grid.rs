@@ -62,6 +62,13 @@ pub fn assign_file_to_button(
     let mut btn = audio_file::from_audio_file("pending", index, file_path, &theme)?;
     let mut cfg = state.config.lock().unwrap();
     let paleta = active_paleta(&mut cfg)?;
+    // Si ya habia un efecto en ese sitio, el nuevo hereda su aspecto: el color es
+    // del LUGAR en la botonera (el operador agrupa por colores), no del archivo.
+    if let Some(previous) = paleta.botones.iter().find(|b| b.index == index) {
+        btn.color_bg = previous.color_bg.clone();
+        btn.color_text = previous.color_text.clone();
+        btn.style = previous.style.clone();
+    }
     paleta.botones.retain(|b| b.index != index);
     btn.id = format!("{}_btn_{index}", paleta.id);
     paleta.botones.push(btn);

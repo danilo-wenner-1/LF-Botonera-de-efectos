@@ -19,3 +19,6 @@ pub mod tab_reorder;
 mod mic_shortcuts_tests;
 #[cfg(test)]
 mod profile_shortcuts_conflict_tests;
+
+#[cfg(test)]
+mod shortcut_scope_tests;

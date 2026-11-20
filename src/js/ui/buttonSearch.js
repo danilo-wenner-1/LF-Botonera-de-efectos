@@ -37,6 +37,15 @@ export function initButtonSearch(getConfig, onRefresh) {
     });
 }
 
+/** Abre el buscador listo para escribir (lo usa la tecla Tab). Si ya esta abierto,
+ *  vuelve a poner el cursor en el campo. */
+export function openButtonSearch() {
+    const btn = document.getElementById('btn-button-search');
+    if (!btn || !_panel) return;
+    if (_panel.classList.contains('hidden')) _open(btn);
+    else { _input.select(); _input.focus(); }
+}
+
 function _build() {
     _panel = document.createElement('div');
     _panel.className = 'button-search-panel hidden';

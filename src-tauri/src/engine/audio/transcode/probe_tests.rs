@@ -39,9 +39,24 @@ fn adts_sin_configuracion_a_frecuencia_completa_es_directo() {
 }
 
 #[test]
-fn solo_la_familia_mp4_es_candidata() {
+fn son_candidatos_la_familia_mp4_y_el_mp3() {
     assert!(is_candidate("C:/fx/Aplausos.M4A"));
     assert!(is_candidate("efecto.aac"));
-    assert!(!is_candidate("efecto.mp3"));
+    assert!(is_candidate("C:/fx/EFECTO.MP3"));
+    assert!(!is_candidate("efecto.wav"));
     assert!(!is_candidate("sin_extension"));
+}
+
+/// Un MP3 que no existe o esta vacio no se puede decodificar: debe pasar a
+/// conversion (o a error), nunca darse por bueno.
+#[test]
+fn un_mp3_que_no_se_puede_leer_no_se_da_por_nativo() {
+    use super::plays_natively;
+    assert!(!plays_natively("Z:/no/existe/nunca.mp3"));
+    let dir = std::env::temp_dir().join("lf_probe_mp3_vacio");
+    std::fs::create_dir_all(&dir).unwrap();
+    let vacio = dir.join("vacio.mp3");
+    std::fs::write(&vacio, b"esto no es un mp3 valido").unwrap();
+    assert!(!plays_natively(vacio.to_str().unwrap()));
+    let _ = std::fs::remove_dir_all(dir);
 }

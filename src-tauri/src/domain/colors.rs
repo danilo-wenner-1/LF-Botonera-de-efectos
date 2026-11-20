@@ -124,7 +124,7 @@ fn hex_to_hsl(hex: &str) -> Option<(f32, f32, f32)> {
 /// llevaban texto blanco cuando el oscuro contrastaba mas: medido, 9 de los 48
 /// casos de la paleta bajaban del 4.5 que pide el estandar, con el peor en 2.71.
 /// Comparando de verdad, solo queda uno rozando el limite (4.43).
-fn readable_text(bg_hex: &str) -> String {
+pub(crate) fn readable_text(bg_hex: &str) -> String {
     let dark = "#111111";
     let light = "#FFFFFF";
     if contrast_ratio(bg_hex, dark) > contrast_ratio(bg_hex, light) {

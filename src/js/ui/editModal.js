@@ -9,7 +9,6 @@
 import { invoke } from '../bridge/api.js';
 import { t } from '../util/i18n.js';
 import { invokeShortcutSave } from './shortcutSave.js';
-import { attachPalette, refreshColorInputs } from './colorPalette.js';
 import { appAlert } from './appDialog.js';
 import {
     canPrelisten, defaultFolder, isFolderType, isLocution,
@@ -57,12 +56,6 @@ export async function openEditModal(index, btnData, onSave, target = 'grid') {
     initMidiField('edit-midi', 'edit-midi-capture', 'edit-midi-clear');
     setMidiField('edit-midi', btnData?.midi);
     initEditVisual(btnData?.visual);
-    await attachPalette(
-        document.getElementById('edit-bg-color'),
-        document.getElementById('edit-text-color'),
-        'button',
-    );
-    await refreshColorInputs();
     initEditStyle(btnData, target === 'fixed' ? 0 : currentTabFont());
     _applyPathHint(type0, pathEl);
     syncEditVolumeControl(type0);
@@ -113,7 +106,6 @@ export async function openEditModal(index, btnData, onSave, target = 'grid') {
                 // Rust ya asignó un color aleatorio al botón nuevo
                 document.getElementById('edit-bg-color').value   = updated.color_bg;
                 document.getElementById('edit-text-color').value = updated.color_text;
-                await refreshColorInputs();
                 syncEditStyleFromInputs();
             }
         } catch (_) { /* Usuario canceló el diálogo */ }

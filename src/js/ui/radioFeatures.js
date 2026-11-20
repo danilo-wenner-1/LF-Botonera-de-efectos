@@ -7,7 +7,10 @@
  */
 import { invoke, listen } from '../bridge/api.js';
 import { t } from '../util/i18n.js';
-import { initButtonSearch } from './buttonSearch.js';
+import { initButtonSearch, openButtonSearch } from './buttonSearch.js';
+import { applyDisplayOptions } from './displayOptions.js';
+import { initRelocate } from './relocate.js';
+import { isMapping } from './mapping.js';
 import { initTabOutputs } from './tabOutputs.js';
 import { showNotice } from './notice.js';
 
@@ -23,8 +26,11 @@ export function initRadioFeatures(config, onRefresh) {
     _config = config;
     _onRefresh = onRefresh;
     applyBottomBar(config);
+    applyDisplayOptions(config);
+    initRelocate(onRefresh);
     initButtonSearch(() => _config, onRefresh);
     _wireTabWheel();
+    _wireTabKey();
     initTabOutputs(() => _config, onRefresh);
     listen('audio-convert-status', e => {
         const { path, status, error } = e.payload ?? {};
@@ -39,6 +45,28 @@ export function initRadioFeatures(config, onRefresh) {
 export function updateRadioFeatures(config) {
     _config = config;
     applyBottomBar(config);
+    applyDisplayOptions(config);
+}
+
+/**
+ * La tecla Tab abre el buscador, lista para escribir el nombre del efecto. No se
+ * toca si se está escribiendo en un campo, hay un diálogo abierto o se asigna un
+ * atajo (Modo Mapeo): ahí Tab conserva su función de siempre.
+ */
+function _wireTabKey() {
+    document.addEventListener('keydown', e => {
+        if (e.key !== 'Tab' || e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) return;
+        if (isMapping() || _modalIsOpen()) return;
+        const tag = e.target?.tagName;
+        const inSearch = e.target?.closest?.('.button-search-panel');
+        if (!inSearch && (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT')) return;
+        e.preventDefault(); // sin esto el foco saltaria al siguiente control
+        openButtonSearch();
+    });
+}
+
+function _modalIsOpen() {
+    return Boolean(document.querySelector('.modal-overlay:not(.hidden)'));
 }
 
 /** Oculta la barra inferior si así se configuró. La rejilla (flex) ocupa el
@@ -48,20 +76,18 @@ export function applyBottomBar(config) {
 }
 
 /**
- * Rueda vertical SOBRE LA BARRA DE PESTAÑAS: arriba = anterior, abajo =
- * siguiente. Fuera de esa zona la rueda no hace nada nuevo (la rejilla y el
- * panel siguen desplazándose como siempre). La rueda horizontal (Shift o
- * trackpad) sigue desplazando la barra si hay muchas pestañas.
+ * Rueda vertical SOBRE LA BARRA DE PESTAÑAS o SOBRE LA BOTONERA: arriba = anterior,
+ * abajo = siguiente. Fuera de esas zonas la rueda no hace nada nuevo (el panel
+ * fijo y las listas siguen desplazándose como siempre). La rueda horizontal
+ * (Shift o trackpad) sigue desplazando la barra si hay muchas pestañas, y
+ * Ctrl+rueda queda para el zoom.
  */
 function _wireTabWheel() {
-    const bar = document.querySelector('.tabs-container');
-    if (!bar || bar.dataset.wheelReady) return;
-    bar.dataset.wheelReady = '1';
     let accumulated = 0;
     let last = 0;
     let busy = false;
-    bar.addEventListener('wheel', async e => {
-        if (e.shiftKey || Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+    const onWheel = async e => {
+        if (e.shiftKey || e.ctrlKey || Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
         e.preventDefault();
         accumulated += e.deltaY;
         const now = performance.now();
@@ -78,5 +104,10 @@ function _wireTabWheel() {
         } finally {
             busy = false;
         }
-    }, { passive: false });
+    };
+    for (const zone of [document.querySelector('.tabs-container'), document.getElementById('main-grid')]) {
+        if (!zone || zone.dataset.wheelReady) continue;
+        zone.dataset.wheelReady = '1';
+        zone.addEventListener('wheel', onWheel, { passive: false });
+    }
 }

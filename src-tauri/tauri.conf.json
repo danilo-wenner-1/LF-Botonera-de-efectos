@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "LF Botonera Radio",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "identifier": "io.github.danilo-wenner-1.LF-Botonera-Radio",
   "build": {
     "beforeDevCommand": "npm run dev",

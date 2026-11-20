@@ -87,7 +87,9 @@ function renderTabs(config) {
         paintAdaptive(tab, paleta.tab_bg || '#3a3f44', paleta.tab_text || '#ffffff', 'tab');
         const midi = midiDisplay(paleta.midi);
         const shortcuts = [paleta.shortcut, midi].filter(Boolean).join(' / ');
-        tab.textContent = shortcuts ? `[${shortcuts}] ${paleta.nombre}` : paleta.nombre;
+        // Solo el nombre: el atajo no se pinta en la pestaña (queda en el tooltip).
+        tab.textContent = paleta.nombre;
+        if (shortcuts) tab.title = shortcuts;
 
         tab.addEventListener('click', async e => {
             if (e.altKey) return;

@@ -1,6 +1,10 @@
 //! Modulo: engine/audio/transcode/probe.rs
-//! Proposito: decidir si un archivo MP4/M4A/AAC se puede reproducir TAL CUAL
-//! con calidad completa, o si hay que convertirlo.
+//! Proposito: decidir si un archivo MP4/M4A/AAC (o un MP3) se puede reproducir TAL
+//! CUAL con calidad completa, o si hay que convertirlo.
+//!
+//! Un MP3 solo se convierte si el decodificador no consigue abrirlo ni sacar su
+//! primera muestra (cabeceras raras, etiquetas corruptas, bloques dañados al
+//! principio): los que suenan bien no se tocan, ni se duplican en disco.
 //!
 //! symphonia decodifica AAC-LC y ALAC, pero no HE-AAC (SBR/PS):
 //! - con señalizacion EXPLICITA (tipo de objeto 5/29, o extension 0x2B7) el
@@ -16,8 +20,8 @@ use symphonia::core::io::MediaSourceStream;
 use symphonia::core::meta::MetadataOptions;
 use symphonia::core::probe::Hint;
 
-/// Extensiones de la familia MP4/AAC a las que se aplica esta decision.
-pub const CANDIDATES: [&str; 5] = ["m4a", "mp4", "aac", "m4b", "3gp"];
+/// Extensiones a las que se aplica esta decision: la familia MP4/AAC y el MP3.
+pub const CANDIDATES: [&str; 6] = ["m4a", "mp4", "aac", "m4b", "3gp", "mp3"];
 
 pub fn is_candidate(path: &str) -> bool {
     Path::new(path)
@@ -30,7 +34,17 @@ pub fn is_candidate(path: &str) -> bool {
 /// true = se reproduce directo con calidad completa.
 /// false = hay que convertirlo (o no se puede abrir: dañado, codec ajeno).
 pub fn plays_natively(path: &str) -> bool {
+    if is_mp3(path) {
+        return crate::engine::audio::decode::native_decodes(path);
+    }
     probe(path).unwrap_or(false)
+}
+
+fn is_mp3(path: &str) -> bool {
+    Path::new(path)
+        .extension()
+        .and_then(|e| e.to_str())
+        .is_some_and(|e| e.eq_ignore_ascii_case("mp3"))
 }
 
 fn probe(path: &str) -> Option<bool> {

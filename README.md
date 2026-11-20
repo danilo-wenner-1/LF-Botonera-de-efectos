@@ -8,7 +8,7 @@
 ## 📥 Cómo instalarla (Windows 10/11)
 
 1. Entra en **[Releases](https://github.com/danilo-wenner-1/LF-Botonera-de-efectos/releases/latest)**
-   y descarga el archivo **`LF.Botonera.Radio_1.5.1_x64-setup.exe`**.
+   y descarga el archivo **`LF.Botonera.Radio_1.5.2_x64-setup.exe`**.
 2. Ábrelo con doble clic.
 3. Windows probablemente mostrará **«Windows protegió su PC»** (SmartScreen). Es normal:
    el instalador no tiene firma digital paga. Pulsa **Más información → Ejecutar de todas formas**.
@@ -32,6 +32,13 @@ pestaña → Exportar (.bdelf)* (o *Perfil → Exportar*) y aquí *Importar*.
 | **Colores HEX y degradados** de dos colores (fondo y texto), con vista previa | Clic derecho en un botón → *Editar…* |
 | **Ocultar la barra inferior** para tener más espacio | ⚙️ Ajustes → Principal → «Mostrar la barra inferior» |
 | **Archivos M4A** | Se cargan igual que un MP3. Los que no se pueden leer directo se convierten solos a MP3 en segundo plano |
+| **Arrastrar sin tecla**: botones (intercambian lugar) y pestañas (se reordenan) | Mantener pulsado y arrastrar. Con un clic normal el efecto suena como siempre |
+| **MP3 ilegibles** | Si un MP3 no se puede leer, se convierte solo a uno que sí |
+| **Efecto no encontrado** (borrado, movido, otra PC) | Al pulsarlo ofrece elegir una carpeta y busca todos los que faltan |
+| **Tecla Tab** abre el buscador | Escribes el nombre del efecto directamente |
+| **Atajos de botón desde cualquier pestaña** | Asignar atajo en *Editar…*; avisa si se repite en otra pestaña |
+| **Un solo menú de color** (selector + código HEX) | En todos los lugares donde se elige color |
+| **Texto de duración y número de posición** | ⚙️ Ajustes → Principal |
 
 Notas:
 - Si la placa de sonido de una pestaña se desconecta, sus efectos **siguen sonando por la
@@ -45,6 +52,7 @@ Notas:
 
 Esta versión todavía **no se probó con hardware real**. Si la usas, dinos cómo te fue con:
 
+0. **Novedades de la 1.5.2:** arrastrar botones y pestañas, que los atajos suenen desde cualquier pestaña, la tecla Tab, el menú de color, el tamaño de texto en la botonera y buscar efectos perdidos desde otra carpeta.
 1. Tres pestañas con tres salidas distintas, disparando a la vez, y desconectar una placa mientras suena.
 2. Cambiar de pestaña con la rueda y con atajos (Ctrl+1, Ctrl+2…). Intentar repetir un atajo debe avisar del conflicto.
 3. Tamaños de texto y colores: cerrar y volver a abrir la app y comprobar que todo se mantiene.

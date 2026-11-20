@@ -9,8 +9,11 @@
 body.bottom-bar-hidden #bottom-bar { display: none; }
 
 /* ── Tamaño de texto propio (botón o pestaña) ── */
-.grid-item.has-font-size,
-.fixed-panel-item.has-font-size { font-size: var(--btn-font-size); }
+/* Con el atributo del body (0,3,1) para ganarle al tamaño global de Ajustes
+   (`body[data-button-text-size] .grid-item`, 0,2,1): sin esto el tamaño propio se
+   guardaba pero no se veia en la botonera. */
+body[data-button-text-size] .grid-item.has-font-size,
+body[data-button-text-size] .fixed-panel-item.has-font-size { font-size: var(--btn-font-size); }
 .grid-item .button-visual-text { overflow-wrap: anywhere; }
 
 /* ── Colores exactos y degradados ── */
@@ -126,3 +129,28 @@ body.bottom-bar-hidden #bottom-bar { display: none; }
   font-size: 13px;
 }
 .lf-notice-error { border-left-color: var(--error-color); }
+
+/* ── Lo que se ve en cada boton (Ajustes → Principal) ── */
+body.hide-button-index .grid-item .index { display: none; }
+.grid-item .timer { font-size: var(--timer-font-size, 13px); }
+
+/* ── Editor de efecto: ancho, redimensionable y con scroll propio ──
+   En monitores HD la ventana de 400 px se recortaba y no se veian todas las
+   opciones. Cabecera y pie fijos; el cuerpo se desplaza. */
+#edit-modal .modal-content {
+  width: min(780px, 94vw);
+  min-width: 440px;
+  max-width: 98vw;
+  max-height: 94vh;
+  display: flex;
+  flex-direction: column;
+  resize: both;
+  overflow: hidden;
+}
+#edit-modal .modal-header,
+#edit-modal .modal-footer { flex: 0 0 auto; }
+#edit-modal .modal-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+
+/* ── Menu de color unico: el del sistema + HEX ── */
+.color-picker-content { width: min(360px, 94vw); }
+#color-picker-preview { height: 72px; margin-top: 12px; }

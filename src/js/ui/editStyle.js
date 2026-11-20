@@ -5,28 +5,21 @@
  * previa en vivo. Rust valida y guarda (`style` en update_button_data).
  */
 import { t } from '../util/i18n.js';
-import { refreshColorInputs } from './colorPalette.js';
+import { normalizeHex } from '../util/hexColor.js';
 import { paintButtonStyle } from './buttonStyle.js';
 import { bindFontControl, globalFontPx } from './fontSizeControl.js';
 
 const $ = id => document.getElementById(id);
 const PAIRS = [
-    ['edit-bg-color', 'edit-bg-hex', true],
-    ['edit-text-color', 'edit-text-hex', true],
-    ['edit-bg2-color', 'edit-bg2-hex', false],
-    ['edit-text2-color', 'edit-text2-hex', false],
+    ['edit-bg-color', 'edit-bg-hex'],
+    ['edit-text-color', 'edit-text-hex'],
+    ['edit-bg2-color', 'edit-bg2-hex'],
+    ['edit-text2-color', 'edit-text2-hex'],
 ];
 
 let _font = null;
 let _tabFont = 0;
 let _wired = false;
-
-/** Normaliza lo que se escribe o pega: `ff0000`, `#F00` → `#FF0000`. */
-export function normalizeHex(raw) {
-    let v = String(raw || '').trim().replace(/^#/, '');
-    if (/^[0-9a-f]{3}$/i.test(v)) v = v.split('').map(c => c + c).join('');
-    return /^[0-9a-f]{6}$/i.test(v) ? `#${v.toUpperCase()}` : null;
-}
 
 /**
  * Carga el estilo del botón en el formulario.
@@ -83,13 +76,13 @@ function _wire() {
     _wired = true;
     _font = bindFontControl('edit', () => _tabFont || globalFontPx(),
         () => (_tabFont ? 'font_size.from_tab' : 'font_size.from_global'), () => _preview());
-    PAIRS.forEach(([color, hex, palette]) => {
-        $(hex).addEventListener('input', () => _onHex(color, hex, palette));
+    PAIRS.forEach(([color, hex]) => {
+        $(hex).addEventListener('input', () => _onHex(color, hex));
         $(color).addEventListener('input', () => {
             $(hex).value = normalizeHex($(color).value) ?? '';
             $(hex).classList.remove('invalid');
-            // Elegir de la paleta es elegir el color adaptado al tema.
-            if (palette) $('edit-color-exact').checked = false;
+            // Un color elegido a mano se ve tal cual, sin adaptarlo al tema.
+            $('edit-color-exact').checked = true;
             _preview();
         });
     });
@@ -99,16 +92,14 @@ function _wire() {
     $('edit-name').addEventListener('input', _preview);
 }
 
-function _onHex(color, hex, palette) {
+function _onHex(color, hex) {
     const value = normalizeHex($(hex).value);
     $(hex).classList.toggle('invalid', !value && $(hex).value.trim() !== '');
     if (!value) return;
-    $(color).value = value;
+    // El selector del sistema solo admite minusculas.
+    $(color).value = value.toLowerCase();
     // Quien escribe un HEX quiere ESE color, no su versión adaptada al tema.
-    if (palette) {
-        $('edit-color-exact').checked = true;
-        refreshColorInputs();
-    }
+    $('edit-color-exact').checked = true;
     _preview();
 }
 

@@ -1,199 +1,148 @@
 /**
  * Archivo: colorPalette.js
- * Proposito: selector modal de colores entregados por Rust.
+ * Propósito: la elección de colores de TODA la app, con un único menú: el
+ * selector de color del sistema más un campo HEX (escribir o pegar #RRGGBB) y
+ * vista previa. Sustituye a la antigua paleta de 24 colores.
+ *
+ * Dos usos:
+ *  - `attachPalette` añade el campo HEX junto a un `<input type="color">` ya
+ *    existente (pestañas, perfiles).
+ *  - `pickColor` abre un diálogo y devuelve el color elegido (pintar varios
+ *    botones a la vez, donde no hay formulario).
  */
 
-import { invoke } from '../bridge/api.js';
-import { colorBg, colorText, currentTheme as _theme } from '../util/colorTheme.js';
+import { normalizeHex } from '../util/hexColor.js';
+import { t } from '../util/i18n.js';
 
-let _palette = null;
-let _target = null;
-let _choice = null;
-let _manualText = false;
+const _pairs = [];
+
+/** Pone un campo HEX junto a cada selector de color y los mantiene sincronizados. */
+export function attachPalette(bgInput, textInput) {
+    [bgInput, textInput].forEach(input => input && _attachHex(input));
+    return Promise.resolve();
+}
+
+/** Repinta los campos HEX tras cambiar los colores desde código. */
+export function refreshColorInputs() {
+    _pairs.forEach(({ color, hex }) => {
+        hex.value = normalizeHex(color.value) ?? '';
+        hex.classList.remove('invalid');
+    });
+    return Promise.resolve();
+}
+
+function _attachHex(color) {
+    if (color.dataset.hexReady) return;
+    color.dataset.hexReady = '1';
+    color.classList.add('native-color');
+    const hex = _hexInput();
+    const wrap = document.createElement('div');
+    wrap.className = 'color-hex-pair';
+    color.replaceWith(wrap);
+    wrap.append(color, hex);
+    hex.value = normalizeHex(color.value) ?? '';
+    color.addEventListener('input', () => {
+        hex.value = normalizeHex(color.value) ?? '';
+        hex.classList.remove('invalid');
+    });
+    hex.addEventListener('input', () => {
+        const value = normalizeHex(hex.value);
+        hex.classList.toggle('invalid', !value && hex.value.trim() !== '');
+        if (!value) return;
+        color.value = value.toLowerCase();
+        // Quien escuche el selector (vistas previas) se entera igual que si lo
+        // hubiera movido el usuario.
+        color.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    _pairs.push({ color, hex });
+}
+
+function _hexInput() {
+    const hex = document.createElement('input');
+    hex.type = 'text';
+    hex.className = 'hex-input';
+    hex.maxLength = 7;
+    hex.spellcheck = false;
+    hex.autocomplete = 'off';
+    hex.placeholder = '#RRGGBB';
+    hex.title = t('colors.hex_hint');
+    return hex;
+}
+
+// ── Diálogo "elige un color y devuélvemelo" ─────────────────────────────────
+
 let _resolvePick = null;
-const _registered = [];
+const $ = id => document.getElementById(id);
 
-export function attachPalette(bgInput, textInput, role = 'button') {
-    if (!bgInput || bgInput.dataset.paletteReady) return;
-    bgInput.dataset.paletteReady = '1';
-    bgInput.classList.add('managed-color-input');
-    if (textInput) textInput.classList.add('managed-color-input');
-    _registered.push({ bgInput, textInput, role });
-    _wireColorInput(bgInput, bgInput, textInput, role);
-    if (textInput) _wireColorInput(textInput, bgInput, textInput, role);
-    refreshColorInputs();
-}
-
-export async function refreshColorInputs() {
-    const palette = await _loadPalette();
-    _registered.forEach(r => _paintInputs(r, palette));
-}
-
-function _wireColorInput(input, bgInput, textInput, role) {
-    input.readOnly = true;
-    input.addEventListener('pointerdown', e => {
-        e.preventDefault();
-        openColorPicker(bgInput, textInput, role);
-    });
-    input.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            openColorPicker(bgInput, textInput, role);
-        }
-    });
-}
-
-export async function openColorPicker(bgInput, textInput, role = 'button') {
-    _target = { bgInput, textInput, role };
-    _choice = null;
-    _manualText = false;
-    const palette = await _loadPalette();
-    _paintInputs(_target, palette);
-    _renderPalette(palette);
-    _selectByBase(bgInput.value, palette[0]);
-    _syncTextOptions();
-    document.getElementById('color-picker-modal')?.classList.remove('hidden');
-}
-
-/**
- * Abre el selector y **devuelve** el color elegido (o `null` si se cancela), en
- * vez de escribirlo en unos campos. Lo usa la selección múltiple, que no tiene
- * formulario: pinta varios botones de una vez.
- */
-export async function pickColor(role = 'button') {
-    _target = { bgInput: null, textInput: null, role };
-    _choice = null;
-    _manualText = false;
-    const palette = await _loadPalette();
-    _renderPalette(palette);
-    _selectByBase(null, palette[0]);
-    _syncTextOptions();
-    document.getElementById('color-picker-modal')?.classList.remove('hidden');
+/** Abre el diálogo y devuelve el color elegido (`#RRGGBB`), o null si se cancela. */
+export function pickColor(_role = 'button', initial = '#E53935') {
+    const start = normalizeHex(initial) ?? '#E53935';
+    $('color-picker-native').value = start.toLowerCase();
+    $('color-picker-hex').value = start;
+    $('color-picker-hex').classList.remove('invalid');
+    _paintPreview(start);
+    $('color-picker-modal')?.classList.remove('hidden');
+    $('color-picker-hex')?.select();
+    $('color-picker-hex')?.focus();
     return new Promise(resolve => { _resolvePick = resolve; });
 }
 
 export function initColorPicker() {
-    document.getElementById('color-picker-apply')?.addEventListener('click', _apply);
-    document.getElementById('color-picker-cancel')?.addEventListener('click', _hide);
-    document.getElementById('color-picker-modal')?.addEventListener('click', e => {
-        if (e.target?.id === 'color-picker-modal') _hide();
+    $('color-picker-apply')?.addEventListener('click', _apply);
+    $('color-picker-cancel')?.addEventListener('click', () => _finish(null));
+    $('color-picker-modal')?.addEventListener('click', e => {
+        if (e.target?.id === 'color-picker-modal') _finish(null);
     });
-    document.querySelectorAll('input[name="color-picker-text"]').forEach(r => {
-        r.addEventListener('change', () => {
-            if (!_choice) return;
-            _manualText = true;
-            _choice.text = r.value;
-            _paintPreview();
-        });
+    $('color-picker-native')?.addEventListener('input', () => {
+        const value = normalizeHex($('color-picker-native').value);
+        $('color-picker-hex').value = value ?? '';
+        $('color-picker-hex').classList.remove('invalid');
+        if (value) _paintPreview(value);
     });
-}
-
-async function _loadPalette() {
-    if (_palette) return _palette;
-    _palette = await invoke('get_color_palette').catch(() => []);
-    return _palette;
-}
-
-function _renderPalette(palette) {
-    const grid = document.getElementById('color-picker-grid');
-    if (!grid) return;
-    grid.innerHTML = '';
-    palette.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'color-choice';
-        btn.dataset.base = opt.base;
-        btn.style.backgroundColor = colorBg(opt);
-        btn.style.color = colorText(opt);
-        btn.textContent = 'A';
-        btn.addEventListener('click', () => _select(opt));
-        grid.appendChild(btn);
+    $('color-picker-hex')?.addEventListener('input', () => {
+        const hex = $('color-picker-hex');
+        const value = normalizeHex(hex.value);
+        hex.classList.toggle('invalid', !value && hex.value.trim() !== '');
+        if (!value) return;
+        $('color-picker-native').value = value.toLowerCase();
+        _paintPreview(value);
     });
-}
-
-function _selectByBase(base, fallback) {
-    const found = _palette?.find(c => c.base.toLowerCase() === String(base).toLowerCase());
-    _select(found || fallback);
-}
-
-function _select(opt) {
-    if (!opt) return;
-    _choice = { base: opt.base, bg: colorBg(opt), text: _textForSelection(opt), option: opt };
-    document.querySelectorAll('.color-choice').forEach(btn => {
-        btn.classList.toggle('selected', btn.dataset.base === opt.base);
+    $('color-picker-hex')?.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); _apply(); }
     });
-    _paintPreview();
-}
-
-function _syncTextOptions() {
-    const dark = _theme() === 'dark' && ['button', 'tab'].includes(_target?.role);
-    const black = document.getElementById('color-text-black');
-    if (!black) return;
-    black.disabled = dark;
-    document.getElementById('color-text-white').checked = dark || _choice?.text !== '#111111';
-    black.checked = !dark && _choice?.text === '#111111';
-}
-
-function _paintPreview() {
-    if (!_choice) return;
-    const preview = document.getElementById('color-picker-preview');
-    if (preview) {
-        preview.style.backgroundColor = _choice.bg;
-        preview.style.color = _choice.text;
-    }
-    _syncTextOptions();
 }
 
 function _apply() {
-    if (!_choice || !_target) return;
-    if (_resolvePick) return _finishPick(_choice.base);
-    _target.bgInput.value = _choice.base;
-    if (_target.textInput) _target.textInput.value = _choice.text;
-    _paintInputs(_target, _palette || []);
-    // Avisa a quien escuche (los campos HEX y la vista previa del editor).
-    _target.bgInput.dispatchEvent(new Event('input', { bubbles: true }));
-    _target.textInput?.dispatchEvent(new Event('input', { bubbles: true }));
-    _hide();
+    const value = normalizeHex($('color-picker-hex').value);
+    if (!value) {
+        $('color-picker-hex').classList.add('invalid');
+        return;
+    }
+    _finish(value);
 }
 
-function _hide() {
-    document.getElementById('color-picker-modal')?.classList.add('hidden');
-    // Cerrar sin elegir es cancelar: quien esperaba el color debe saberlo.
-    if (_resolvePick) _finishPick(null);
-}
-
-function _finishPick(value) {
+function _finish(value) {
+    $('color-picker-modal')?.classList.add('hidden');
     const resolve = _resolvePick;
     _resolvePick = null;
-    document.getElementById('color-picker-modal')?.classList.add('hidden');
     resolve?.(value);
 }
 
-function _textForSelection(opt) {
-    if (_theme() === 'dark' && ['button', 'tab'].includes(_target?.role)) return opt.darkText;
-    if (_manualText) return _selectedTextValue();
-    return colorText(opt);
+/** El texto de la vista previa se elige por contraste con el fondo. */
+function _paintPreview(bg) {
+    const preview = $('color-picker-preview');
+    if (!preview) return;
+    preview.style.backgroundColor = bg;
+    preview.style.color = _readableOn(bg);
 }
 
-function _selectedTextValue() {
-    const checked = document.querySelector('input[name="color-picker-text"]:checked');
-    return checked?.value || '#FFFFFF';
+function _readableOn(hex) {
+    const n = parseInt(hex.slice(1), 16);
+    const lin = v => {
+        v /= 255;
+        return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+    };
+    const lum = 0.2126 * lin((n >> 16) & 255) + 0.7152 * lin((n >> 8) & 255) + 0.0722 * lin(n & 255);
+    // Blanco o casi negro: el que más contraste dé (igual que `readable_text` en Rust).
+    return (lum + 0.05) / 0.05 > 1.05 / (lum + 0.05) ? '#111111' : '#FFFFFF';
 }
-
-function _paintInputs(target, palette) {
-    const opt = palette.find(c => c.base.toLowerCase() === String(target.bgInput.value).toLowerCase());
-    const bg = opt ? colorBg(opt) : target.bgInput.value;
-    target.bgInput.style.backgroundColor = bg;
-    target.bgInput.style.color = 'transparent';
-    if (target.textInput) {
-        target.textInput.style.backgroundColor = target.textInput.value || '#ffffff';
-        target.textInput.style.color = 'transparent';
-    }
-}
-
-document.addEventListener('lf-theme-change', () => {
-    refreshColorInputs();
-    if (_target && !document.getElementById('color-picker-modal')?.classList.contains('hidden')) {
-        openColorPicker(_target.bgInput, _target.textInput, _target.role);
-    }
-});

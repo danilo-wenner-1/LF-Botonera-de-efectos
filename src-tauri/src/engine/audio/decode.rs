@@ -41,6 +41,17 @@ pub fn source_from_path_at(path: &str, loop_mode: bool, start_s: f64) -> Option<
     rodio_source_at(path, loop_mode, start_s).or_else(|| opus_source_at(path, loop_mode, start_s))
 }
 
+/// ¿Lo abre y decodifica el decodificador DIRECTAMENTE, sin pasar por la copia
+/// convertida? Es lo que decide si un MP3 hace falta convertirlo: debe poder abrir
+/// el archivo Y sacar su primera muestra (una cabecera valida con el cuerpo roto
+/// abre pero no suena).
+pub fn native_decodes(path: &str) -> bool {
+    rodio_source(path, false)
+        .or_else(|| opus_source(path, false))
+        .and_then(|mut source| source.next())
+        .is_some()
+}
+
 /// Indica si el backend puede decodificar realmente este archivo.
 pub fn can_decode(path: &str) -> bool {
     source_from_path(path, false).is_some()

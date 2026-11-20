@@ -48,6 +48,10 @@ pub fn play_button_id(state: &AppState, id: &str) -> Result<(), String> {
             if btn.path.is_empty() {
                 return Err("button_without_audio".to_string());
             }
+            // Borrado o movido (o la app en otra PC): la UI ofrece buscarlo.
+            if crate::domain::button::relocate::is_missing(&btn.path) {
+                return Err("audio_file_not_found".to_string());
+            }
             play_file(state, &cfg, &btn, btn.path.clone(), btn.duration, group)
         }
     }

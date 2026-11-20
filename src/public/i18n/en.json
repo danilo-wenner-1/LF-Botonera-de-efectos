@@ -121,7 +121,12 @@
     "toolbar_buttons": "Top bar buttons:",
     "show_console": "Show the Audio console",
     "show_fixed_panel": "Show the Fixed panel",
-    "show_bottom_bar": "Show the bottom bar (clock, modes, Mic, volume, Stop all)"
+    "show_bottom_bar": "Show the bottom bar (clock, modes, Mic, volume, Stop all)",
+    "duration_size": "Duration text size (under the name):",
+    "duration_xsmall": "Extra small",
+    "duration_small": "Small",
+    "duration_normal": "Normal",
+    "show_button_index": "Show the position number on each button"
   },
   "audio_device": {
     "title": "Audio output unavailable",
@@ -785,7 +790,7 @@
     "invalid_grid_size": "The grid must have at least one row and one column.",
     "grid_resize_would_drop_buttons": "The grid cannot be reduced because some buttons would be left outside the new size.",
     "no_empty_button": "No empty buttons available.",
-    "audio_file_not_found": "Audio file not found.",
+    "audio_file_not_found": "The audio file cannot be found.",
     "unsupported_audio_format": "Unsupported audio format.",
     "invalid_volume": "Volume must be between 0 and 100%.",
     "invalid_button_type": "Invalid button type.",
@@ -843,7 +848,8 @@
     "button_without_audio": "This button has no audio file assigned.",
     "invalid_hex_color": "Invalid color code.",
     "invalid_gradient": "Invalid gradient: choose the second color.",
-    "invalid_font_size": "Text size out of range (8–48 px)."
+    "invalid_font_size": "Text size out of range (8–48 px).",
+    "folder_not_found": "The folder cannot be found."
   },
   "mic": {
     "label": "Mic",
@@ -921,5 +927,13 @@
     "hint": "Examples: “applause”, “jingles 5”, “12”.",
     "no_results": "No effect found.",
     "location": "Tab {n}: {tab} · button {index} (row {row}, column {col})"
+  },
+  "relocate": {
+    "body": "This effect's audio file cannot be found: it was deleted or moved (for example, when installing the app on another PC). Do you want to choose a folder to search for it? Any other missing effects will be searched for too.",
+    "search": "Choose folder and search",
+    "searching": "Searching for the files…",
+    "found": "{n} effect(s) relocated.",
+    "still": "{n} file(s) are still not found in that folder.",
+    "none": "None of the missing files were found in that folder."
   }
 }

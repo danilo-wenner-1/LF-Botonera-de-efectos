@@ -98,12 +98,13 @@ pub(crate) fn resolve_action(
             return Ok(ShortcutAction::SetPaleta(paleta.id.clone()));
         }
     }
-    if let Some(active) = profile
-        .paletas
-        .iter()
-        .find(|p| p.id == profile.active_paleta_id)
+    // Cualquier pestana, empezando por la visible (ver actions::button_with_shortcut).
+    let active = profile.paletas.iter().find(|p| p.id == profile.active_paleta_id);
+    for paleta in active
+        .into_iter()
+        .chain(profile.paletas.iter().filter(|p| p.id != profile.active_paleta_id))
     {
-        for btn in &active.botones {
+        for btn in &paleta.botones {
             if matches_key(&btn.shortcut, shortcut) {
                 return Ok(ShortcutAction::PlayButton(btn.id.clone()));
             }

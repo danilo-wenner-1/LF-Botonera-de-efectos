@@ -48,6 +48,23 @@ pub fn set_button_text_size(size: String, state: tauri::State<AppState>) -> Resu
 
 /// Enseña o esconde uno de los botones de la barra superior que se pueden
 /// prescindir. Solo esos dos: el resto de la barra no es opcional.
+/// Lo que se ve en cada boton de la botonera: el numero de posicion y el tamaño
+/// del texto de duracion. Son preferencias globales de visualizacion.
+#[tauri::command]
+pub fn set_button_display(
+    show_index: bool,
+    duration_px: u32,
+    state: tauri::State<AppState>,
+) -> Result<(), String> {
+    if !(8..=20).contains(&duration_px) {
+        return Err("invalid_font_size".to_string());
+    }
+    let mut cfg = state.config.lock().unwrap();
+    cfg.show_button_index = show_index;
+    cfg.duration_font_px = duration_px;
+    config::save_config(&cfg)
+}
+
 #[tauri::command]
 pub fn set_toolbar_button(
     button: String,

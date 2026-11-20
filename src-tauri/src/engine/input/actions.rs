@@ -40,18 +40,20 @@ pub fn play_by_shortcut(cfg: &AppConfig, key: &str) -> Result<Option<String>, St
     if let Some(btn) = fixed.iter().find(|btn| same_key(&btn.shortcut, key)) {
         return Ok(Some(btn.id.clone()));
     }
-    let Some(active) = profile
-        .paletas
-        .iter()
-        .find(|p| p.id == profile.active_paleta_id)
-    else {
-        return Ok(None);
-    };
-    Ok(active
-        .botones
-        .iter()
+    Ok(button_with_shortcut(profile, key))
+}
+
+/// El boton con ese atajo en CUALQUIER pestana del perfil. Primero la visible: si
+/// una configuracion antigua tiene el mismo atajo en dos pestanas (antes solo
+/// sonaba la activa), gana el de la pestana que se esta viendo.
+pub fn button_with_shortcut(profile: &crate::model::ProfileData, key: &str) -> Option<String> {
+    let active = profile.paletas.iter().find(|p| p.id == profile.active_paleta_id);
+    active
+        .into_iter()
+        .chain(profile.paletas.iter().filter(|p| p.id != profile.active_paleta_id))
+        .flat_map(|p| p.botones.iter())
         .find(|btn| same_key(&btn.shortcut, key))
-        .map(|btn| btn.id.clone()))
+        .map(|btn| btn.id.clone())
 }
 
 pub fn same_key(saved: &str, key: &str) -> bool {

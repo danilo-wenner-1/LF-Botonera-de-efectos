@@ -121,7 +121,12 @@
     "toolbar_buttons": "Botones de la barra superior:",
     "show_console": "Mostrar la Consola de audio",
     "show_fixed_panel": "Mostrar el Panel fijo",
-    "show_bottom_bar": "Mostrar la barra inferior (reloj, modos, Mic, volumen, Detener todo)"
+    "show_bottom_bar": "Mostrar la barra inferior (reloj, modos, Mic, volumen, Detener todo)",
+    "duration_size": "Tamaño del texto de duración (bajo el nombre):",
+    "duration_xsmall": "Muy pequeño",
+    "duration_small": "Pequeño",
+    "duration_normal": "Normal",
+    "show_button_index": "Mostrar el número de posición en cada botón"
   },
   "audio_device": {
     "title": "Salida de audio no disponible",
@@ -785,7 +790,7 @@
     "invalid_grid_size": "La grilla debe tener al menos una fila y una columna.",
     "grid_resize_would_drop_buttons": "No se puede reducir la grilla porque hay botones fuera del nuevo tamaño.",
     "no_empty_button": "No hay botones vacíos disponibles.",
-    "audio_file_not_found": "No se encontró el archivo de audio.",
+    "audio_file_not_found": "No se encuentra el archivo de audio.",
     "unsupported_audio_format": "Formato de audio no compatible.",
     "invalid_volume": "El volumen debe estar entre 0 y 100%.",
     "invalid_button_type": "Tipo de botón no válido.",
@@ -843,7 +848,8 @@
     "button_without_audio": "Este botón no tiene un archivo de audio asignado.",
     "invalid_hex_color": "Código de color no válido.",
     "invalid_gradient": "Degradado no válido: elige el segundo color.",
-    "invalid_font_size": "Tamaño de texto fuera de rango (8–48 px)."
+    "invalid_font_size": "Tamaño de texto fuera de rango (8–48 px).",
+    "folder_not_found": "No se encuentra la carpeta."
   },
   "mic": {
     "label": "Mic",
@@ -921,5 +927,13 @@
     "hint": "Ejemplos: «aplausos», «cortinas 5», «12».",
     "no_results": "No se encontró ningún efecto.",
     "location": "Pestaña {n}: {tab} · botón {index} (fila {row}, columna {col})"
+  },
+  "relocate": {
+    "body": "No se encuentra el archivo de este efecto: se borró o se movió (por ejemplo, al instalar la app en otra PC). ¿Quieres elegir una carpeta para buscarlo? Se buscará también el resto de efectos que falten.",
+    "search": "Elegir carpeta y buscar",
+    "searching": "Buscando los archivos…",
+    "found": "Se reubicaron {n} efecto(s).",
+    "still": "{n} archivo(s) siguen sin encontrarse en esa carpeta.",
+    "none": "No se encontró ninguno de los archivos que faltan en esa carpeta."
   }
 }

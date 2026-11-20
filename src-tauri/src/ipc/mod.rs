@@ -40,6 +40,7 @@ pub mod cmd_player_queue;
 pub mod cmd_player_remove;
 pub mod cmd_preload;
 pub mod cmd_profiles;
+pub mod cmd_relocate;
 pub mod cmd_startup_prompts;
 pub mod cmd_tab_outputs;
 pub mod cmd_tracks;

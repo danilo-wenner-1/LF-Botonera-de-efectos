@@ -1,14 +1,18 @@
 /**
  * Archivo: gridDnd.js
- * Proposito: arrastre INTERNO con Alt: mover botones entre celdas, pestanas, el
- * panel fijo y la cola del reproductor. La UI solo marca origen/destino; Rust
- * decide y persiste el movimiento. Los archivos del explorador van en fileDrop.js.
+ * Proposito: arrastre INTERNO de botones entre celdas, pestanas, el panel fijo y
+ * la cola del reproductor. Se arrastra con el raton (sin tecla) o con Alt+clic
+ * (empieza al instante, como siempre). Soltar sobre otro boton los INTERCAMBIA.
+ * La UI solo marca origen/destino; Rust decide y persiste el movimiento. Los
+ * archivos del explorador van en fileDrop.js.
  */
 
 import { invoke } from '../bridge/api.js';
 import { drawGrid } from './grid.js';
 import { alertIpcError } from './ipcError.js';
 import { dropButtonOnPlayer } from './playerDnd.js';
+import { isMapping } from './mapping.js';
+import { movedEnough, swallowNextClick } from '../util/dragGesture.js';
 
 let _onRefresh = null;
 let _srcIndex = null;
@@ -16,6 +20,7 @@ let _srcId = '';
 let _srcPaletaId = '';
 let _wired = false;
 let _srcFixed = false;
+let _pending = null; // pulsado sin Alt: aun no se sabe si es clic o arrastre
 
 /** Inicializa el arrastre interno. Llamar una sola vez. */
 export function initGridDnd(onRefresh) {
@@ -27,25 +32,43 @@ export function initGridDnd(onRefresh) {
 
 function _wireReorder() {
     document.addEventListener('mousedown', e => {
-        if (!e.altKey || e.button !== 0) return;
+        if (e.button !== 0) return;
         const cell = e.target.closest('.grid-item[data-id], .fixed-panel-item[data-id]');
         if (!cell) return;
-        _srcIndex = parseInt(cell.dataset.index);
-        _srcId = cell.dataset.id ?? '';
-        _srcFixed = cell.classList.contains('fixed-panel-item');
-        _srcPaletaId = _activePaletaId();
-        cell.classList.add('drag-source');
-        if (!_srcFixed) _activeTab()?.classList.add('tab-drag-source');
-        e.preventDefault();
+        if (e.altKey) {
+            _begin(cell);
+            e.preventDefault();
+            return;
+        }
+        // Ctrl+clic selecciona y el Modo Mapeo asigna atajos: no son arrastres.
+        if (e.ctrlKey || e.shiftKey || e.metaKey || isMapping()) return;
+        _pending = { x: e.clientX, y: e.clientY, cell };
     });
 
     document.addEventListener('mousemove', e => {
+        // Se solto el boton fuera de la ventana: no llego ningun mouseup. Sin esto
+        // el arrastre quedaria colgado hasta el proximo clic.
+        if ((_srcIndex !== null || _pending) && e.buttons === 0) {
+            _pending = null;
+            _srcIndex = null;
+            _srcId = '';
+            _srcPaletaId = '';
+            _srcFixed = false;
+            _clearDragMarks();
+            return;
+        }
+        if (_pending && movedEnough(_pending, e)) {
+            _begin(_pending.cell);
+            _pending = null;
+        }
         if (_srcIndex === null) return;
         _markDragTarget(e.target);
     });
 
     document.addEventListener('mouseup', async e => {
+        _pending = null; // fue un clic: lo atiende el manejador de la celda
         if (_srcIndex === null) return;
+        swallowNextClick(); // soltar tras arrastrar no debe disparar el sonido
         const from = _srcIndex;
         const fromId = _srcId;
         const fromPaletaId = _srcPaletaId;
@@ -79,6 +102,16 @@ function _wireReorder() {
         }
         await _moveWithinGrid(e.target.closest('.grid-item'), from);
     });
+}
+
+/** Marca la celda de origen. Lo comparten el arrastre con Alt y el normal. */
+function _begin(cell) {
+    _srcIndex = parseInt(cell.dataset.index);
+    _srcId = cell.dataset.id ?? '';
+    _srcFixed = cell.classList.contains('fixed-panel-item');
+    _srcPaletaId = _activePaletaId();
+    cell.classList.add('drag-source');
+    if (!_srcFixed) _activeTab()?.classList.add('tab-drag-source');
 }
 
 async function _moveWithinFixed(from, to) {

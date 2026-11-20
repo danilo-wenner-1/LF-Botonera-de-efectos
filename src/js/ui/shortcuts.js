@@ -6,6 +6,7 @@
 
 import { invoke } from '../bridge/api.js';
 import { shortcutFromEvent } from '../util/keyInputs.js';
+import { reportPlayError } from './notice.js';
 
 let _onRefresh = null;
 let _wired = false;
@@ -40,7 +41,8 @@ async function _handleKey(e) {
         if (!result?.handled) return;
         if (result.refresh) _onRefresh?.();
     } catch (err) {
-        console.error('Error al resolver atajo local:', err);
+        // Un efecto perdido o aun convirtiendose se avisa igual que con el clic.
+        reportPlayError(err);
     }
 }
 

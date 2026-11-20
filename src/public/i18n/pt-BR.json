@@ -121,7 +121,12 @@
     "toolbar_buttons": "Botões da barra superior:",
     "show_console": "Mostrar o Console de áudio",
     "show_fixed_panel": "Mostrar o Painel fixo",
-    "show_bottom_bar": "Mostrar a barra inferior (relógio, modos, Mic, volume, Parar tudo)"
+    "show_bottom_bar": "Mostrar a barra inferior (relógio, modos, Mic, volume, Parar tudo)",
+    "duration_size": "Tamanho do texto de duração (sob o nome):",
+    "duration_xsmall": "Muito pequeno",
+    "duration_small": "Pequeno",
+    "duration_normal": "Normal",
+    "show_button_index": "Mostrar o número de posição em cada botão"
   },
   "audio_device": {
     "title": "Saída de áudio indisponível",
@@ -785,7 +790,7 @@
     "invalid_grid_size": "A grade deve ter pelo menos uma linha e uma coluna.",
     "grid_resize_would_drop_buttons": "Não é possível reduzir a grade porque há botões fora do novo tamanho.",
     "no_empty_button": "Não há botões vazios disponíveis.",
-    "audio_file_not_found": "Arquivo de áudio não encontrado.",
+    "audio_file_not_found": "O arquivo de áudio não foi encontrado.",
     "unsupported_audio_format": "Formato de áudio não compatível.",
     "invalid_volume": "O volume deve estar entre 0 e 100%.",
     "invalid_button_type": "Tipo de botão inválido.",
@@ -843,7 +848,8 @@
     "button_without_audio": "Este botão não tem um arquivo de áudio atribuído.",
     "invalid_hex_color": "Código de cor inválido.",
     "invalid_gradient": "Degradê inválido: escolha a segunda cor.",
-    "invalid_font_size": "Tamanho de texto fora do intervalo (8–48 px)."
+    "invalid_font_size": "Tamanho de texto fora do intervalo (8–48 px).",
+    "folder_not_found": "A pasta não foi encontrada."
   },
   "mic": {
     "label": "Mic",
@@ -921,5 +927,13 @@
     "hint": "Exemplos: «aplausos», «vinhetas 5», «12».",
     "no_results": "Nenhum efeito encontrado.",
     "location": "Aba {n}: {tab} · botão {index} (linha {row}, coluna {col})"
+  },
+  "relocate": {
+    "body": "O arquivo de áudio deste efeito não foi encontrado: foi apagado ou movido (por exemplo, ao instalar o app em outro PC). Quer escolher uma pasta para procurá-lo? Os demais efeitos ausentes também serão procurados.",
+    "search": "Escolher pasta e buscar",
+    "searching": "Procurando os arquivos…",
+    "found": "{n} efeito(s) relocado(s).",
+    "still": "{n} arquivo(s) continuam sem ser encontrados nessa pasta.",
+    "none": "Nenhum dos arquivos ausentes foi encontrado nessa pasta."
   }
 }

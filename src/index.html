@@ -336,14 +336,14 @@
             <div class="col">
               <label data-i18n="edit_modal.bg_color">Color de fondo:</label>
               <div class="color-hex-pair">
-                <input type="color" id="edit-bg-color" value="#444444">
+                <input type="color" id="edit-bg-color" class="native-color" value="#444444">
                 <input type="text" id="edit-bg-hex" class="hex-input" maxlength="7" spellcheck="false" autocomplete="off" placeholder="#RRGGBB" data-i18n-title="colors.hex_hint">
               </div>
             </div>
             <div class="col">
               <label data-i18n="edit_modal.text_color">Color de texto:</label>
               <div class="color-hex-pair">
-                <input type="color" id="edit-text-color" value="#FFFFFF">
+                <input type="color" id="edit-text-color" class="native-color" value="#FFFFFF">
                 <input type="text" id="edit-text-hex" class="hex-input" maxlength="7" spellcheck="false" autocomplete="off" placeholder="#RRGGBB" data-i18n-title="colors.hex_hint">
               </div>
             </div>
@@ -635,6 +635,23 @@
                 </select>
               </div>
             </div>
+            <!-- Lo que se ve en cada boton de la botonera. -->
+            <div class="row">
+              <div class="col">
+                <label for="config-duration-size" data-i18n="settings.duration_size">Tamaño del texto de duración (bajo el nombre):</label>
+                <select id="config-duration-size">
+                  <option value="9" data-i18n="settings.duration_xsmall">Muy pequeño</option>
+                  <option value="11" data-i18n="settings.duration_small">Pequeño</option>
+                  <option value="13" data-i18n="settings.duration_normal">Normal</option>
+                </select>
+              </div>
+              <div class="col">
+                <label class="checkbox-line">
+                  <input type="checkbox" id="config-show-button-index">
+                  <span data-i18n="settings.show_button_index">Mostrar el número de posición en cada botón</span>
+                </label>
+              </div>
+            </div>
             <!-- Botones de la barra superior que se pueden esconder para dejar
                  la vista más limpia. Solo estos dos: el resto no es opcional. -->
             <div class="row">
@@ -896,29 +913,22 @@
       </div>
     </div>
 
-    <!-- Selector de color compatible con tema -->
+    <!-- Selector de color: el del sistema + campo HEX. Es el unico menu de colores. -->
     <div id="color-picker-modal" class="hidden modal-overlay" style="z-index:4600">
       <div class="modal-content color-picker-content">
         <div class="modal-header">
           <h3 data-i18n="color_picker.title">Seleccionar color</h3>
           <button class="close-btn" data-close="color-picker-modal">x</button>
         </div>
-        <div class="modal-body color-picker-body">
-          <div id="color-picker-grid" class="color-picker-grid"></div>
-          <div class="color-picker-side">
-            <div id="color-picker-preview" class="color-picker-preview">
-              <span data-i18n="color_picker.preview">EJEMPLO</span>
-            </div>
-            <div class="color-picker-text">
-              <label>
-                <input id="color-text-white" type="radio" name="color-picker-text" value="#FFFFFF">
-                <span data-i18n="color_picker.white">Texto blanco</span>
-              </label>
-              <label>
-                <input id="color-text-black" type="radio" name="color-picker-text" value="#111111">
-                <span data-i18n="color_picker.black">Texto negro</span>
-              </label>
-            </div>
+        <div class="modal-body">
+          <div class="color-hex-pair">
+            <input type="color" id="color-picker-native" class="native-color" value="#e53935">
+            <input type="text" id="color-picker-hex" class="hex-input" maxlength="7"
+                   spellcheck="false" autocomplete="off" placeholder="#RRGGBB"
+                   data-i18n-title="colors.hex_hint">
+          </div>
+          <div id="color-picker-preview" class="edit-style-preview">
+            <span data-i18n="color_picker.preview">EJEMPLO</span>
           </div>
         </div>
         <div class="modal-footer">

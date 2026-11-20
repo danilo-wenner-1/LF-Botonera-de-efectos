@@ -32,7 +32,10 @@ export function noticeError(error) {
 /** Disparo desde la UI: los errores con código conocido se avisan. */
 export function reportPlayError(error) {
     const code = String(error);
-    if (['audio_converting', 'audio_convert_failed', 'button_without_audio'].includes(code)) {
+    if (code === 'audio_file_not_found') {
+        // No existe en esa ruta: se ofrece buscarlo en una carpeta (relocate.js).
+        import('./relocate.js').then(m => m.offerRelocate());
+    } else if (['audio_converting', 'audio_convert_failed', 'button_without_audio'].includes(code)) {
         noticeError(code);
     } else {
         console.error(error);

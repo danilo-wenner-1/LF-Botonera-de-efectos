@@ -18,22 +18,29 @@ pub fn apply_button_shortcut(
     clear_tab_conflict(profile, key, replace)?;
 
     let active_id = profile.active_paleta_id.clone();
-    let paleta = profile
-        .paletas
-        .iter_mut()
-        .find(|p| p.id == active_id)
-        .ok_or("Pestana activa no encontrada")?;
-
-    if let Some(btn) = paleta
-        .botones
-        .iter_mut()
-        .find(|b| b.index != index && same_key(&b.shortcut, key))
-    {
-        let target = format!("{} {}", btn.index, display_name(&btn.name, &btn.label));
-        if !replace {
-            return Err(conflict("shortcut_conflict_button", key, &target));
+    if !profile.paletas.iter().any(|p| p.id == active_id) {
+        return Err("Pestana activa no encontrada".to_string());
+    }
+    // Los atajos de boton suenan desde CUALQUIER pestana, asi que el duplicado
+    // se busca en todas (no solo en la visible).
+    for paleta in profile.paletas.iter_mut() {
+        let same_tab = paleta.id == active_id;
+        let tab_name = paleta.nombre.clone();
+        if let Some(btn) = paleta
+            .botones
+            .iter_mut()
+            .find(|b| !(same_tab && b.index == index) && same_key(&b.shortcut, key))
+        {
+            let name = display_name(&btn.name, &btn.label);
+            if !replace {
+                return Err(if same_tab {
+                    conflict("shortcut_conflict_button", key, &format!("{} {}", btn.index, name))
+                } else {
+                    conflict("shortcut_conflict_button_any", key, &format!("{tab_name} - {name}"))
+                });
+            }
+            btn.shortcut.clear();
         }
-        btn.shortcut.clear();
     }
     Ok(())
 }

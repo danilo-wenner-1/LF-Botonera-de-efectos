@@ -32,6 +32,34 @@ directamente desde Windows:
 
 ## [Sin publicar]
 
+## [1.5.2] — 2026-11-20 · LF Botonera Radio (versión modificada no oficial)
+
+### Añadido
+- **Arrastrar sin tecla:** los botones se mueven arrastrándolos (al soltar sobre otro,
+  intercambian lugar) y las pestañas se reordenan arrastrándolas. Alt+arrastre
+  sigue funcionando. Un clic normal sigue disparando el efecto.
+- **Archivos perdidos:** si un efecto no se encuentra (borrado, movido o la app
+  instalada en otra PC), se ofrece elegir una carpeta; se buscan por nombre todos
+  los efectos que faltan y se corrigen sus rutas de una vez.
+- **MP3 que no se pueden leer** se convierten automáticamente a un MP3 que sí.
+- **Ajustes → Principal:** tamaño del texto de duración y opción para ocultar el
+  número de posición de cada botón.
+- **Tecla Tab** abre el buscador, lista para escribir.
+- La rueda del mouse también cambia de pestaña sobre la botonera.
+
+### Cambiado
+- Los atajos de teclado de los botones funcionan desde cualquier pestaña, y se
+  avisa si se repite la misma tecla en otra pestaña.
+- El nombre de la pestaña ya no muestra su atajo (queda en el tooltip).
+- Un único menú de color en toda la app: selector del sistema más código HEX.
+  Reemplaza a la paleta de 24 colores.
+- Soltar un archivo sobre un botón ocupado conserva el color del lugar.
+- El editor de efecto es más ancho y redimensionable, con desplazamiento propio.
+
+### Corregido
+- El tamaño de texto propio de cada botón y pestaña ahora se aplica en la botonera
+  (lo tapaba el tamaño global de Ajustes).
+
 ## [1.5.1] — 2026-11-04 · LF Botonera Radio (versión modificada no oficial)
 
 ### Cambiado
